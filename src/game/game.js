@@ -29,6 +29,7 @@ var Game = {
         var stage = this.stages.load(id);
         stage.onLoaded = function () {
             Game.stage = stage;
+            Camera.centerToMap();
         };
     },
 
@@ -36,6 +37,8 @@ var Game = {
         if (this.stage) {
             this.stage.draw(ctx);
         }
+
+        Camera.update();
     },
 
     update: function () {
