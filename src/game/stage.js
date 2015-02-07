@@ -1,8 +1,12 @@
 var Stage = Class.extend({
+    isStage: true,
+
     id: null,
+
     entities: [],
     toRemove: [],
-    isStage: true,
+
+    backgroundImage: null,
 
     init: function () {
         this.clear();
@@ -28,6 +32,16 @@ var Stage = Class.extend({
     },
 
     draw: function (ctx) {
+        // Draw background image, if one was configured
+        {
+            if (this.backgroundImage) {
+                var w = Canvas.canvas.width;
+                var h = Canvas.canvas.height;
+
+                ctx.drawImage(this.backgroundImage, 0, 0, w, h, 0, 0, w, h);
+            }
+        }
+
         // Draw all non-player entities on the map
         {
             for (var i = 0; i < this.entities.length; i++) {

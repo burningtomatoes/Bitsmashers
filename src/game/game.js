@@ -19,13 +19,28 @@ var Game = {
 
     start: function () {
         console.info('[Game] Starting game...');
+
+        this.loadStage('green');
+    },
+
+    loading: false,
+
+    loadStage: function (id) {
+        var stage = this.stages.load(id);
+        stage.onLoaded = function () {
+            Game.stage = stage;
+        };
     },
 
     draw: function (ctx) {
-
+        if (this.stage) {
+            this.stage.draw(ctx);
+        }
     },
 
     update: function () {
-
+        if (this.stage) {
+            this.stage.update();
+        }
     }
 };
