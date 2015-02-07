@@ -8,4 +8,5 @@ $(document).ready(function() {
     console.log("");
 
     Game.init();
+    Game.start();
 });
