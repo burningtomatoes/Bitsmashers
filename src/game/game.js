@@ -29,7 +29,7 @@ var Game = {
         var stage = this.stages.load(id);
         stage.onLoaded = function () {
             Game.stage = stage;
-            Game.stage.add(new TheDoctorFighter());
+            Game.stage.setPlayer(new TheDoctorFighter());
             Camera.centerToMap();
         };
     },

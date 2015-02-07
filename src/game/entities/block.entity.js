@@ -1,4 +1,5 @@
 var BlockEntity = Entity.extend({
     isBlock: true,
-    receivesCollision: false
+    receivesCollision: false,
+    affectedByGravity: false
 });

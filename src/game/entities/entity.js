@@ -1,3 +1,8 @@
+var Direction = {
+    RIGHT: 0,
+    LEFT: 1
+};
+
 var Entity = Class.extend({
     isEntity: true,
 
@@ -6,6 +11,7 @@ var Entity = Class.extend({
 
     causesCollision: true,
     receivesCollision: true,
+    affectedByGravity: true,
 
     posX: 0,
     posY: 0,
@@ -15,6 +21,7 @@ var Entity = Class.extend({
 
     velocityX: 0,
     velocityY: 0,
+    direction: 0,
 
     map: null,
 
@@ -29,10 +36,11 @@ var Entity = Class.extend({
         this.velocityX = 0;
         this.velocityY = 0;
         this.renderer = null;
+        this.direction = Direction.RIGHT;
     },
 
     isMoving: function () {
-        return this.velocityX != 0 && this.velocityY != 0;
+        return this.velocityX != 0 || this.velocityY != 0;
     },
 
     isFalling: function () {
@@ -40,7 +48,7 @@ var Entity = Class.extend({
     },
 
     isJumping: function () {
-        return this.velocityY > 0;
+        return this.velocityY < 0;
     },
 
     stopMoving: function () {
@@ -52,7 +60,11 @@ var Entity = Class.extend({
         this.posX += this.velocityX;
         this.posY += this.velocityY;
 
-        if (this.velocityY != 0) {
+        if (this.velocityX != 0) {
+            this.direction = this.velocityX < 0 ? Direction.LEFT : Direction.RIGHT;
+        }
+
+        if (this.affectedByGravity) {
             this.velocityY += this.map.gravity;
 
             if (this.velocityY >= this.height) {
