@@ -11,7 +11,7 @@ var Entity = Class.extend({
 
     causesCollision: true,
     receivesCollision: true,
-    affectedByGravity: true,
+    affectedByGravity: false,
 
     posX: 0,
     posY: 0,

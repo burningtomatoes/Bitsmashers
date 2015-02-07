@@ -17,9 +17,9 @@ var FighterRenderer = Renderer.extend({
         this.spriteJump = Game.images.load(entity.fighterType + '.jump.png');
 
         this.animIdle = new Animation(this.spriteIdle, entity.width, entity.height, 10, 3, true);
-        this.animWalk = new Animation(this.spriteIdle, entity.width, entity.height, 10, 3, true);
-        this.animAttack = new Animation(this.spriteIdle, entity.width, entity.height, 10, 3, true);
-        this.animJump = new Animation(this.spriteIdle, entity.width, entity.height, 10, 3, true);
+        this.animWalk = new Animation(this.spriteWalk, entity.width, entity.height, 10, 3, true);
+        this.animAttack = new Animation(this.spriteAttack, entity.width, entity.height, 10, 3, true);
+        this.animJump = new Animation(this.spriteJump, entity.width, entity.height, 10, 3, true);
     },
 
     update: function () {
