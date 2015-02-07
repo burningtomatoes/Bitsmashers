@@ -8,6 +8,11 @@ var Camera = {
     yLocked: false,
     xLocked: false,
 
+    isRumbling: false,
+    rumbleOffset: 0,
+    rumbleIntensity: 1,
+    rumbleDuration: 0,
+
     onMapLoaded: function () {
         this.xLocked = (Canvas.canvas.width > Game.stage.width);
         this.yLocked = (Canvas.canvas.height > Game.stage.height);
@@ -24,11 +29,11 @@ var Camera = {
     },
 
     translateX: function(x) {
-        return Math.round(x + this.applyX);
+        return Math.round(x + this.applyX + this.rumbleOffset);
     },
 
     translateY: function(y) {
-        return Math.round(y + this.applyY);
+        return Math.round(y + this.applyY + this.rumbleOffset);
     },
 
     translate: function(x, y) {
@@ -64,7 +69,28 @@ var Camera = {
         this.trackHard = !!hard;
     },
 
+    rumble: function(duration, intensity) {
+        this.isRumbling = true;
+        this.rumbleOffset = 0;
+        this.rumbleDuration = duration;
+        this.rumbleIntensity = intensity;
+    },
+
     update: function() {
+        if (this.isRumbling) {
+            this.rumbleDuration--;
+
+            this.rumbleOffset = chance.integer({
+                min: -this.rumbleIntensity,
+                max: this.rumbleIntensity
+            });
+
+            if (this.rumbleDuration <= 0) {
+                this.isRumbling = false;
+                this.rumbleOffset = 0;
+            }
+        }
+        
         if (this.trackingEntity != null) {
             if (!this.xLocked) {
                 var desiredX = Canvas.canvas.width / 2 - this.trackingEntity.posX - this.trackingEntity.width / 2;
