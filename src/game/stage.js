@@ -54,8 +54,8 @@ var Stage = Class.extend({
             if (this.backgroundImage) {
                 var w = Canvas.canvas.width;
                 var h = Canvas.canvas.height;
-                var x = Camera.rumbleOffset;
-                var y = Camera.rumbleOffset;
+                var x = Camera.rumbleOffset / 5;
+                var y = Camera.rumbleOffset / 5;
 
                 ctx.drawImage(this.backgroundImage, 0, 0, w, h, x, y, w, h);
             }
