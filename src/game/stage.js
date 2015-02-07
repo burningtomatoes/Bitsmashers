@@ -48,6 +48,35 @@ var Stage = Class.extend({
         return false;
     },
 
+    checkCollisions: function (ourEntity, ourRect) {
+        if (ourRect == null) {
+            ourRect = ourEntity.rect();
+        }
+
+        var results = [];
+
+        for (var i = 0; i < this.entities.length; i++) {
+            var entity = this.entities[i];
+
+            if (entity === ourEntity) {
+                continue;
+            }
+
+            var theirRect = entity.rect();
+
+            if (Utils.rectIntersects(ourRect, theirRect)) {
+                results.push(entity);
+            }
+        }
+
+        return results;
+    },
+
+    anyCollisions: function (ourEntity, ourRect) {
+        var cols = this.checkCollisions(ourEntity, ourRect);
+        return cols.length > 0;
+    },
+
     draw: function (ctx) {
         // Draw background image, if one was configured
         {

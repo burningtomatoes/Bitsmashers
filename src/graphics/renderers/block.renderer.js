@@ -13,7 +13,7 @@ var BlockRenderer = Renderer.extend({
 
     draw: function (ctx) {
         var x = Camera.translateX(this.entity.posX);
-        var y = Camera.translateX(this.entity.posY);
+        var y = Camera.translateY(this.entity.posY);
 
         ctx.drawImage(this.tileset, this.srcX, this.srcY, Settings.TileSize, Settings.TileSize, x, y,
             Settings.TileSize, Settings.TileSize);

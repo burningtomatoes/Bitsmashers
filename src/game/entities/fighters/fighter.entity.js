@@ -11,8 +11,10 @@ var FighterEntity = Entity.extend({
     init: function () {
         this._super();
 
-        this.posX = 100;
+        this.posX = 170;
         this.posY = 100;
+
+        this.velocityX = 1
     },
 
     configureRenderer: function () {

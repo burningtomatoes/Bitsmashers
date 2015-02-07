@@ -1,3 +1,5 @@
 var Settings = {
-    TileSize: 32
+    TileSize: 32,
+
+    DebugCollision: true
 };
