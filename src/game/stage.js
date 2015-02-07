@@ -79,7 +79,7 @@ var Stage = Class.extend({
             for (var j = 0; j < this.entities.length; j++) {
                 var entity = this.entities[j];
 
-                if (entity.isPlayer) {
+                if (!entity.isPlayer) {
                     continue;
                 }
 

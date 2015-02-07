@@ -9,8 +9,6 @@ var BlockRenderer = Renderer.extend({
         this.tileset = tileset;
         this.srcX = srcX;
         this.srcY = srcY;
-
-        console.log(srcX + ',' + srcY);
     },
 
     draw: function (ctx) {
