@@ -12,6 +12,8 @@ var Game = {
 
         Canvas.init();
         Keyboard.bind();
+        Matchmaking.handshake();
+        WebRtc.init();
 
         this.images = new ImageLoader();
         this.audio = new AudioLoader();

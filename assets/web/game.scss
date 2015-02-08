@@ -62,3 +62,6 @@ canvas {
   margin-top: -($scaleHeight / 2);
   margin-left: -($scaleWidth / 2);
 }
+.hud {
+  z-index: 200;
+}

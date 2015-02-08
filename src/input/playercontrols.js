@@ -43,7 +43,5 @@ var PlayerControls = {
         else {
             p.velocityX = 0;
         }
-
-        console.log(p.velocityX);
     }
 };
