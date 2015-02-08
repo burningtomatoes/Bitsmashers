@@ -4,17 +4,18 @@ var WebRtc = {
     SESSION_DESCRIPTION:    window.mozRTCSessionDescription     ||      window.RTCSessionDescription,
 
     connected: false,
+    available: false,
 
     init: function () {
         if (this.PEER_CONNECTION == null || this.ICE_CANDIDATE == null || this.SESSION_DESCRIPTION == null) {
             console.error('[Net] WebRTC is not (fully) supported in this browser. Networked multiplayer will not work!');
+            this.available = false;
             return;
         }
 
         var browserMode = this.PEER_CONNECTION == window.mozRTCPeerConnection ? 'Firefox' : 'Chrome/WebKit';
-        console.info('[Net] Initializing netcode (browser mode: ' + browserMode + ')...');
-
-        this.initPeerConnection();
+        console.info('[Net] WebRTC is available (browser mode: ' + browserMode + ')...');
+        this.available = true;
     },
 
     disconnect: function () {

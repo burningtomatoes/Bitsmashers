@@ -2,11 +2,17 @@
   font-family: 'fipps';
   src: url('fipps.otf');
 }
+@font-face {
+  font-family: 'pixelmix';
+  src: url('pixelmix.ttf');
+}
 
 /** Reset & core **/
 * {
-  font-family: 'fipps';
   font-weight: normal !important;
+}
+h1 {
+  font-family: 'fipps';
 }
 *, *:after, *:before {
   box-sizing: border-box;
@@ -26,6 +32,7 @@ html, body {
   text-align: center;
   background: #000;
   color: #fff;
+  font-family: 'pixelmix';
 }
 img {
   border: 0;
@@ -80,5 +87,65 @@ canvas {
   h1 {
     margin-top: 0;
     margin-bottom: 0;
+  }
+}
+
+#mainmenu {
+  .background-video, .video-texture {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 500;
+  }
+  .background-video {
+    opacity: 0.8;
+  }
+  .video-texture {
+    background-image: url('pixelator.png');
+    background-repeat: repeat;
+    z-index: 600;
+  }
+  .content {
+    z-index: 750;
+
+    h1 {
+      color: darkorange;
+      text-shadow: 1px 1px 1px #000, -1px -1px 1px #000;
+    }
+    h2 {
+      color: #fff;
+      font-size: 16px;
+      margin-top: 0;
+    }
+
+    .section {
+      height: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      width: 100%;
+      padding: 20px;
+      color: #fff;
+      margin-top: 50px;
+    }
+
+    .options {
+      .opt {
+        font-size: 24px;
+        padding: 25px;
+        display: block;
+        width: 50%;
+        margin: 0 auto;
+        color: #ccc;
+        border: 1px solid #000;
+
+        &.active {
+          border: 1px solid #aaa;
+          color: #fff;
+        }
+      }
+    }
   }
 }

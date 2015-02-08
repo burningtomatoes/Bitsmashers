@@ -9,6 +9,8 @@ var Matchmaking = {
 
     sessionId: null,
 
+    onHandshake: function() { },
+
     send: function (payload, callback, reference) {
         if (callback == null) {
             callback = function () { };
@@ -47,13 +49,14 @@ var Matchmaking = {
         var callback = function (data) {
             if (data == null || data.code != 'OK') {
                 console.error('[Net] Matchmaking server is not available. Received bad handshake response: ', data);
+                this.onHandshake(null);
                 return;
             }
 
             this.sessionId = parseInt(data.session);
             console.info('[Net] Handshake with matchmaking server complete - session #' + this.sessionId);
 
-            this.sendOfferAndAwait();
+            this.onHandshake(this.sessionId);
         }.bind(this);
 
         this.send(payload, callback);

@@ -12,8 +12,7 @@ var Game = {
 
         Canvas.init();
         Keyboard.bind();
-        Matchmaking.handshake();
-        WebRtc.init();
+        Network.init();
 
         this.images = new ImageLoader();
         this.audio = new AudioLoader();
@@ -26,7 +25,7 @@ var Game = {
         Canvas.$canvas.hide();
 
         BootLogo.show(function() {
-
+            MainMenu.show();
         });
     },
 
@@ -53,6 +52,10 @@ var Game = {
         if (this.stage) {
             this.stage.update();
             PlayerControls.update();
+        }
+
+        if (MainMenu.running) {
+            MainMenu.update();
         }
 
         Keyboard.update();
