@@ -53,8 +53,46 @@ var Network = {
             } else {
                 MainMenu.showConnectNotice('Having trouble connecting to matchmaking service...');
             }
+        } else if (this.status == NetworkStatus.HOSTING_GAME) {
+            MainMenu.showConnectNotice('Preparing to host a game...');
+        } else if (this.status == NetworkStatus.JOINING_GAME) {
+            MainMenu.showConnectNotice('Searching for games to join...');
         } else {
             MainMenu.hideConnectNotice();
         }
+    },
+
+    isBusy: function () {
+        return this.status != NetworkStatus.IDLE;
+    },
+
+    hostGame: function () {
+        if (this.isBusy()) {
+            return;
+        }
+
+        this.status = NetworkStatus.HOSTING_GAME;
+        this.syncUi();
+
+        WebRtc.initPeerConnection();
+        WebRtc.createOffer(function (offer) {
+            if (offer == null) {
+                MainMenu.showConnectNotice('Could not host a game!');
+            } else {
+                Matchmaking.beginOfferingGame();
+            }
+        }.bind(this));
+    },
+
+    joinGame: function () {
+        if (this.isBusy()) {
+            return;
+        }
+
+        this.status = NetworkStatus.JOINING_GAME;
+        this.syncUi();
+
+        WebRtc.initPeerConnection();
+        Matchmaking.beginLookingForGame();
     }
 };

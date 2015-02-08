@@ -56,22 +56,23 @@ var WebRtc = {
         var dataChannel = this.peerConnection.createDataChannel('data_channel', {
             reliable: false
         });
-
-        // Prepare our offer to submit to matchmaking
-        this.createOffer();
     },
 
-    createOffer: function () {
+    createOffer: function (callback) {
         this.peerConnection.createOffer(function (offer) {
             console.log(offer);
             this.peerConnection.setLocalDescription(new WebRtc.SESSION_DESCRIPTION(offer));
             this.sdpOffer = offer;
+            callback(offer);
         }.bind(this), function (e) {
             console.error('[Net] Could not create offer:', e);
+            callback(null);
         });
     },
 
-    createResponse: function (offerSdp) {
+    answer: null,
+
+    createResponse: function (offerSdp, callback) {
         var offer = {
             sdp: offerSdp,
             type: 'offer'
@@ -79,14 +80,17 @@ var WebRtc = {
 
         var sessionDescription = new WebRtc.SESSION_DESCRIPTION(offer);
         this.peerConnection.setRemoteDescription(sessionDescription, function () {
-            console.log('hi');
             this.peerConnection.createAnswer(function(answer) {
                 console.log(answer);
+                WebRtc.answer = answer;
+                callback(answer);
             }, function (e) {
                 console.error('[Net] Could not create answer to offer!', e);
+                callback(null);
             })
         }.bind(this), function (e) {
             console.error('[Net] Could not set remote description!', e);
+            callback(null);
         });
     }
 };

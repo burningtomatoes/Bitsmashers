@@ -3,6 +3,7 @@ var Matchmaking = {
         DISCONNECT: 'disconnect',
         HANDSHAKE: 'handshake',
         OFFER: 'offer',
+        SEEK: 'seek',
         ANSWER: 'answer',
         CANCEL_OFFER: 'cancelOffer'
     },
@@ -74,11 +75,10 @@ var Matchmaking = {
         this.send(payload);
     },
 
-    sendOfferInterval: null,
+    matchmakingInterval: null,
 
-    sendOfferAndAwait: function () {
-        window.clearInterval(this.sendOfferInterval);
-        window.clearInterval(this.sendAnswerInterval);
+    beginLookingForGame: function () {
+        window.clearInterval(this.matchmakingInterval);
 
         if (this.candidate != null) {
             console.info('[Net] Resuming matchmaking, ignoring candidate #' + this.candidate.id + ' from now on.');
@@ -86,6 +86,27 @@ var Matchmaking = {
             this.failedCandidates.push(this.candidate.id);
             this.candidate = null;
         }
+
+        var doSeek = function () {
+            var payload = {
+                session: this.sessionId,
+                op: Matchmaking.Opcode.SEEK
+            };
+
+            this.send(payload, function (data) {
+                if (data.candidate != null) {
+                    this.processOfferCandidate(data.candidate);
+                }
+            }.bind(this));
+        }.bind(this);
+
+        console.info('[Net] Looking for offers on the matchmaking service...');
+        this.matchmakingInterval = window.setInterval(doSeek, 3500);
+        doSeek();
+    },
+
+    beginOfferingGame: function () {
+        window.clearInterval(this.matchmakingInterval);
 
         var doOffer = function () {
             if (WebRtc.sdpOffer == null) {
@@ -99,17 +120,13 @@ var Matchmaking = {
                 sdp_offer: WebRtc.sdpOffer.sdp
             };
 
-            $('#matchmaking').text('Matchmaking...');
-
             this.send(payload, function (data) {
-                if (data.candidate != null) {
-                    this.processCandidate(data.candidate);
-                }
+
             }.bind(this));
         }.bind(this);
 
-        console.info('[Net] Sending offer to matchmaking service, awaiting response...');
-        this.sendOfferInterval = window.setInterval(doOffer, 3500);
+        console.info('[Net] Sending offer to matchmaking service, awaiting responses...');
+        this.matchmakingInterval = window.setInterval(doOffer, 3500);
         doOffer();
     },
 
@@ -117,7 +134,7 @@ var Matchmaking = {
     candidate: null,
     failedCandidates: [],
 
-    processCandidate: function (candidate) {
+    processOfferCandidate: function (candidate) {
         if (candidate.sdp_offer == null) {
             return;
         }
@@ -140,28 +157,39 @@ var Matchmaking = {
             return;
         }
 
-        window.clearInterval(this.sendOfferInterval);
-        window.clearInterval(this.sendAnswerInterval);
+        window.clearInterval(this.matchmakingInterval);
+
+        MainMenu.showConnectNotice('Found game... (#' + this.candidate.id + ')');
 
         var doAnswer = function () {
-            WebRtc.createResponse(this.candidate.sdp_offer);
-
+            console.log('doAnswer()');
             var payload = {
                 op: Matchmaking.Opcode.ANSWER,
                 session: this.sessionId,
-                candidate: this.candidate.id
+                candidate: this.candidate.id,
+                sdp_answer: WebRtc.answer.sdp
             };
 
             this.send(payload, function (data) {
                 if (data.error) {
                     console.warn('[Net] Answer to candidate failed:', data.error);
-                    this.sendOfferAndAwait();
+                    this.beginLookingForGame();
                 }
             }.bind(this));
         }.bind(this);
 
-        //this.sendAnswerInterval = window.setInterval(doAnswer, 3500);
-        doAnswer();
+        WebRtc.createResponse(this.candidate.sdp_offer, function (answer) {
+            MainMenu.showConnectNotice('Trying to connect to a game... (#' + this.candidate.id + ')');
+            console.log(answer);
+            if (answer == null) {
+                // No cigar, cannot respond, resume matchmaking
+                MainMenu.showConnectNotice('Connect failed! Looking for another game...');
+                this.beginLookingForGame();
+            } else {
+                doAnswer();
+                window.setInterval(doAnswer, 1000);
+            }
+        }.bind(this));
     },
 
     cancelOffer: function (callback) {

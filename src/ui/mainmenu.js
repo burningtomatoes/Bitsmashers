@@ -58,7 +58,7 @@ var MainMenu = {
     update: function () {
         var keyUp = Keyboard.wasKeyPressed(KeyCode.W) || Keyboard.wasKeyPressed(KeyCode.UP);
         var keyDown = Keyboard.wasKeyPressed(KeyCode.S) || Keyboard.wasKeyPressed(KeyCode.DOWN);
-        var keySubmit = Keyboard.wasKeyPressed(KeyCode.SPACE) || Keyboard.wasKeyPressed(KeyCode.ENTER);
+        var keySubmit = Keyboard.wasKeyPressed(KeyCode.SPACE) || Keyboard.wasKeyPressed(KeyCode.RETURN) || Keyboard.wasKeyPressed(KeyCode.ENTER);
 
         var optionChange = 0;
 
@@ -92,14 +92,21 @@ var MainMenu = {
         this.$options.show();
     },
 
+    disableOptions: function () {
+        this.$options.hide();
+    },
+
     showConnectNotice: function (text) {
         this.$connecting
             .text(text)
             .show();
+
+        this.disableOptions();
     },
 
     hideConnectNotice: function () {
         this.$connecting.hide();
+
         this.enableOptions();
     }
 };
