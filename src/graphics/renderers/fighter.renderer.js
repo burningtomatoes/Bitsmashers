@@ -46,7 +46,7 @@ var FighterRenderer = Renderer.extend({
         ctx.save();
 
         if (this.entity.direction == Direction.LEFT) {
-            ctx.translate(Camera.translateX(this.entity.posX + this.entity.width / 2), Camera.translateY(this.entity.posY));
+            ctx.translate(Camera.translateX(this.entity.posX + this.entity.width), Camera.translateY(this.entity.posY));
             ctx.scale(-1, 1);
         } else {
             ctx.translate(Camera.translateX(this.entity.posX), Camera.translateY(this.entity.posY));
