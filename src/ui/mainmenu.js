@@ -1,3 +1,9 @@
+var MainMenuOption = {
+    HOST_GAME: 0,
+    JOIN_GAME: 1,
+    SINGLE_PLAYER: 2
+};
+
 var MainMenu = {
     running: false,
     $element: $('#mainmenu'),
@@ -30,13 +36,35 @@ var MainMenu = {
         }.bind(this));
     },
 
+    triggerOption: function () {
+        AudioOut.playSfx('ui_tick.wav');
+
+        switch (this.currentOption) {
+            case MainMenuOption.HOST_GAME:
+                Network.hostGame();
+                break;
+
+            case MainMenuOption.JOIN_GAME:
+                Network.joinGame();
+                break;
+
+            case MainMenuOption.SINGLE_PLAYER:
+                this.$options.find('.opt.o3').text('Yeah, had no time for that. Sorry.');
+                AudioOut.playSfx('too_bad.wav');
+                break;
+        }
+    },
+
     update: function () {
         var keyUp = Keyboard.wasKeyPressed(KeyCode.W) || Keyboard.wasKeyPressed(KeyCode.UP);
         var keyDown = Keyboard.wasKeyPressed(KeyCode.S) || Keyboard.wasKeyPressed(KeyCode.DOWN);
+        var keySubmit = Keyboard.wasKeyPressed(KeyCode.SPACE) || Keyboard.wasKeyPressed(KeyCode.ENTER);
 
         var optionChange = 0;
 
-        if (keyUp) {
+        if (keySubmit) {
+            this.triggerOption();
+        } else if (keyUp) {
             optionChange = -1;
         } else if (keyDown) {
             optionChange = +1;
@@ -54,8 +82,6 @@ var MainMenu = {
             } else if (this.currentOption >= optLength) {
                 this.currentOption = 0;
             }
-
-
 
             this.$options.find('.opt').removeClass('active');
             $(this.$options.find('.opt').get(this.currentOption)).addClass('active');
