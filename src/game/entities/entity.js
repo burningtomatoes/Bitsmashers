@@ -23,6 +23,11 @@ var Entity = Class.extend({
     velocityY: 0,
     direction: 0,
     movementSpeed: 3,
+    jumpPower: 4,
+
+    jumped: false,
+    landed: false,
+    doubleJumped: false,
 
     map: null,
 
@@ -38,6 +43,9 @@ var Entity = Class.extend({
         this.velocityY = 0;
         this.renderer = null;
         this.direction = Direction.RIGHT;
+        this.jumped = false;
+        this.landed = false;
+        this.doubleJumped = false;
     },
 
     isMoving: function () {
@@ -88,6 +96,9 @@ var Entity = Class.extend({
 
         if (this.isFalling() && !this.canMoveDown()) {
             this.velocityY = 0;
+            this.landed = true;
+            this.jumped = false;
+            this.doubleJumped = false;
         }
 
         if (this.renderer != null) {
@@ -111,7 +122,7 @@ var Entity = Class.extend({
         }
     },
 
-        canMoveLeft: function () {
+    canMoveLeft: function () {
         if (!this.receivesCollision) {
             return true;
         }

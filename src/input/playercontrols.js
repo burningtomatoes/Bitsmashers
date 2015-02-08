@@ -6,16 +6,24 @@ var PlayerControls = {
 
         var p = Game.stage.player;
 
-        var keyMoveUp       = Keyboard.isKeyDown(KeyCode.W) || Keyboard.isKeyDown(KeyCode.UP);
+        var keyMoveUp       = Keyboard.wasKeyPressed(KeyCode.W) || Keyboard.wasKeyPressed(KeyCode.UP);
         var keyMoveLeft     = Keyboard.isKeyDown(KeyCode.A) || Keyboard.isKeyDown(KeyCode.LEFT);
         var keyMoveRight    = Keyboard.isKeyDown(KeyCode.D) || Keyboard.isKeyDown(KeyCode.RIGHT);
 
-        if (keyMoveUp && p.canMoveUp()) {
-            p.velocityY -= p.movementSpeed;
+        if (keyMoveUp && p.canMoveUp() && (p.landed || (p.jumped && !p.doubleJumped))) {
+            p.velocityY -= p.jumpPower;
 
-            if (p.velocityY <= -p.movementSpeed) {
-                p.velocityY = -p.movementSpeed;
+            if (p.velocityY <= -p.jumpPower) {
+                p.velocityY = -p.jumpPower;
             }
+
+            p.landed = false;
+
+            if (p.jumped) {
+                p.doubleJumped = true;
+            }
+
+            p.jumped = true;
         }
 
         if (keyMoveLeft && p.canMoveLeft()) {

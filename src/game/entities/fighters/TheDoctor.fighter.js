@@ -10,6 +10,9 @@ var TheDoctorFighter = FighterEntity.extend({
         this.xMargin = 5;
         this.yMargin = 22;
 
+        this.movementSpeed = 3;
+        this.jumpPower = 10;
+
         this.configureRenderer();
     }
 });
