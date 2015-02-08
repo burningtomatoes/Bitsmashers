@@ -11,6 +11,7 @@ var Game = {
         console.info('[Game] Initializing BitSmashers R' + this.buildCode + '...');
 
         Canvas.init();
+        Keyboard.bind();
 
         this.images = new ImageLoader();
         this.audio = new AudioLoader();
@@ -45,6 +46,9 @@ var Game = {
     update: function () {
         if (this.stage) {
             this.stage.update();
+            PlayerControls.update();
         }
+
+        Keyboard.update();
     }
 };

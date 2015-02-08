@@ -17,8 +17,6 @@ var FighterEntity = Entity.extend({
         this.posX = 170;
         this.posY = 100;
 
-        this.velocityX = 1;
-
         this.xMargin = 0;
         this.yMargin = 0;
     },
