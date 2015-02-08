@@ -23,7 +23,11 @@ var Game = {
     start: function () {
         console.info('[Game] Starting game...');
 
-        this.loadStage('green');
+        Canvas.$canvas.hide();
+
+        BootLogo.show(function() {
+
+        });
     },
 
     loading: false,

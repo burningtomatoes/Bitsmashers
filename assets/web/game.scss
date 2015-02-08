@@ -65,3 +65,20 @@ canvas {
 .hud {
   z-index: 200;
 }
+
+#burningtomato {
+  $height: 505px;
+  height: $height;
+  top: 50%;
+  margin-top: -($height / 2) - 50;
+  position: fixed;
+  text-align: center;
+  width: 100%;
+  left: 0;
+  right: 0;
+
+  h1 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
