@@ -23,8 +23,21 @@ var WebRtcConnection = Class.extend({
         this.peerConnection = new PeerConnection({
             "iceServers": window.iceServers
         });
+        this.peerConnection.onicecandidate = function (e) {
+            if (this.remoteId == null) {
+                // We do not have a partner to send our ICE candidates to yet...
+                return;
+            }
+
+            if (e.candidate) {
+                Matchmaking.sendIce(e.candidate, this.remoteId);
+            }
+        }.bind(this);
 
         this.dataChannel = this.peerConnection.createDataChannel('dc' + id);
+        this.dataChannel.onopen = function () {
+            console.warn('!!!!!!!!!!!!!!!!!!!! THE DATA CHANNEL IS NOW OPEN MOTHAF#!@#A');
+        };
     },
 
     reset: function () {
@@ -53,6 +66,7 @@ var WebRtcConnection = Class.extend({
         this.peerConnection.setRemoteDescription(new SessionDescription(offer), function () {
             this.peerConnection.createAnswer(function (answer) {
                 console.info('[Net:Rtc][#' + this.id + '] Created answer', answer);
+                this.peerConnection.setLocalDescription(answer);
                 callback(answer);
             }.bind(this), function (error) {
                 console.error('[Net:Rtc][#' + this.id + '] Could not create answer (resetting connection)', error);
@@ -78,5 +92,9 @@ var WebRtcConnection = Class.extend({
             this.isBeingAnswered = false;
             callback(null);
         }.bind(this));
+    },
+
+    processIceCandidate: function (candidate) {
+        this.peerConnection.addIceCandidate(new IceCandidate(candidate));
     }
 });

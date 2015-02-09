@@ -48,8 +48,9 @@ var Matchmaking = {
         Net.answerFound(data);
     },
 
-    onIce: function () {
-        // ...
+    onIce: function (data) {
+        console.info('[Net:Match] Received an ICE candidate from remote party', data);
+        Net.iceReceived(data);
     },
 
     offerRepeat: null,
@@ -64,9 +65,16 @@ var Matchmaking = {
             connectionId: connectionId
         };
 
-        console.log(payload);
-
         this.socket.emit('answer', payload);
+    },
+
+    sendIce: function (candidate, connectionId) {
+        var payload = {
+            candidate: candidate,
+            connectionId: connectionId
+        };
+
+        this.socket.emit('ice', payload);
     },
 
     disconnect: function (reconnect) {

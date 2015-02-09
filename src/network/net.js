@@ -49,16 +49,20 @@ var Net = {
         })
     },
 
-    alreadyKnowConnection: function (connId) {
+    getConnectionBySessionId: function (connId) {
         for (var i = 0; i < this.connections.length; i++) {
             var connection = this.connections[i];
 
             if (connection.remoteId == connId) {
-                return true;
+                return connection;
             }
         }
 
-        return false;
+        return null;
+    },
+
+    alreadyKnowConnection: function (connId) {
+        return this.getConnectionBySessionId(connId) != null;
     },
 
     answerFound: function (answerData) {
@@ -82,6 +86,20 @@ var Net = {
                 connection.remoteId = answerData.connectionId;
             }
         });
+    },
+
+    iceReceived: function (iceData) {
+        if (!this.busy) {
+            return;
+        }
+
+        var conn = this.getConnectionBySessionId(iceData.connectionId);
+
+        if (conn == null) {
+            return;
+        }
+
+        conn.processIceCandidate(iceData.candidate);
     },
 
     getFreeConnection: function () {
