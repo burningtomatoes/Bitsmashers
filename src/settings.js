@@ -4,5 +4,5 @@ var Settings = {
     DebugCollision: true,
     DebugSkipBootLogo: true,
 
-    MatchmakingUri: 'http://www.burningtomato.com/api/matchmaking'
+    MatchmakingUri: 'http://localhost:2013'
 };

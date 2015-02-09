@@ -12,7 +12,7 @@ var Game = {
 
         Canvas.init();
         Keyboard.bind();
-        Network.init();
+        Net.init();
 
         this.images = new ImageLoader();
         this.audio = new AudioLoader();

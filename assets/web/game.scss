@@ -91,6 +91,11 @@ canvas {
 }
 
 #mainmenu {
+  .connecting {
+    margin-bottom: 50px;
+    color: yellow;
+  }
+
   .background-video, .video-texture {
     position: absolute;
     top: 0;

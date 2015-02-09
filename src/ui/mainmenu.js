@@ -21,15 +21,10 @@ var MainMenu = {
         this.running = true;
 
         this.$cover.hide();
+        this.$options.show();
+        this.$connecting.hide();
 
-        if (Network.status == null || Network.status == NetworkStatus.CREATING_SESSION ||
-            NetworkStatus.status == NetworkStatus.NOT_SUPPORTED) {
-            this.$options.hide();
-            this.$connecting.show();
-        } else {
-            this.$options.show();
-            this.$connecting.hide();
-        }
+        this.showConnectNotice('Connecting to matchmaking service...');
 
         this.$element.fadeIn('slow', function () {
             this.$cover.slideDown();
@@ -37,15 +32,26 @@ var MainMenu = {
     },
 
     triggerOption: function () {
+        if (!Matchmaking.isConnected() && this.currentOption != MainMenuOption.SINGLE_PLAYER) {
+            AudioOut.playSfx('error.wav');
+            this.showConnectNotice('Still trying to connect! Hold on...');
+
+            if (!Matchmaking.isConnecting) {
+                Matchmaking.connect();
+            }
+
+            return;
+        }
+
         AudioOut.playSfx('ui_tick.wav');
 
         switch (this.currentOption) {
             case MainMenuOption.HOST_GAME:
-                Network.hostGame();
+                Net.hostGame();
                 break;
 
             case MainMenuOption.JOIN_GAME:
-                Network.joinGame();
+                Net.joinGame();
                 break;
 
             case MainMenuOption.SINGLE_PLAYER:
@@ -88,6 +94,16 @@ var MainMenu = {
         }
     },
 
+    showConnectNotice: function (text) {
+        this.$connecting
+            .text(text)
+            .slideDown();
+    },
+
+    hideConnectNotice: function () {
+        this.$connecting.slideUp();
+    },
+
     enableOptions: function () {
         this.$options.show();
     },
@@ -95,18 +111,4 @@ var MainMenu = {
     disableOptions: function () {
         this.$options.hide();
     },
-
-    showConnectNotice: function (text) {
-        this.$connecting
-            .text(text)
-            .show();
-
-        this.disableOptions();
-    },
-
-    hideConnectNotice: function () {
-        this.$connecting.hide();
-
-        this.enableOptions();
-    }
 };
