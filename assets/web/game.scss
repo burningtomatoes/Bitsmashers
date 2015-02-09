@@ -154,3 +154,26 @@ canvas {
     }
   }
 }
+
+.lobby {
+  .player {
+    background: rgb(20, 20, 20);
+    padding: 20px;
+    text-align: left;
+    width: 50%;
+    margin: 0 auto;
+
+    &.p1 h2 {
+      color: red !important;
+    }
+    &.p2 h2 {
+      color: yellow !important;
+    }
+    &.p3 h2 {
+      color: blue !important;
+    }
+    &.p4 h2 {
+      color: green !important;
+    }
+  }
+}

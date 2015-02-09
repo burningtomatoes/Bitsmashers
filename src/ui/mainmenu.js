@@ -142,22 +142,24 @@ var MainMenu = {
     },
 
     enableOptions: function () {
-        if (this.secondaryMode == false) {
+        if (!this.secondaryMode) {
             return;
         }
 
         this.secondaryMode = false;
         this.$options.find('.primary').show();
         this.$options.find('.secondary').hide();
+        this.$element.find('.lobby').hide();
     },
 
     disableOptions: function () {
-        if (this.secondaryMode == false) {
-            true;
+        if (this.secondaryMode) {
+            return;
         }
 
         this.secondaryMode = true;
         this.$options.find('.primary').hide();
         this.$options.find('.secondary').show();
+        this.$element.find('.lobby').show();
     }
 };
