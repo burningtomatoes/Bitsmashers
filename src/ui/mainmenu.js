@@ -1,7 +1,8 @@
 var MainMenuOption = {
-    HOST_GAME: 0,
-    JOIN_GAME: 1,
-    SINGLE_PLAYER: 2
+    CANCEL: 0,
+    HOST_GAME: 1,
+    JOIN_GAME: 2,
+    SINGLE_PLAYER: 3
 };
 
 var MainMenu = {
@@ -11,7 +12,8 @@ var MainMenu = {
     $connecting: $('#mainmenu .connecting'),
     $options: $('#mainmenu .options'),
 
-    currentOption: 0,
+    currentOption: 1,
+    secondaryMode: false,
 
     show: function () {
         if (this.running) {
@@ -23,6 +25,8 @@ var MainMenu = {
         this.$cover.hide();
         this.$options.show();
         this.$connecting.hide();
+
+        this.disableOptions();
 
         this.showConnectNotice('Connecting to matchmaking service...');
 
@@ -46,15 +50,36 @@ var MainMenu = {
         AudioOut.playSfx('ui_tick.wav');
 
         switch (this.currentOption) {
+            case MainMenuOption.CANCEL:
+                if (!this.secondaryMode) {
+                    break;
+                }
+
+                Matchmaking.disconnect(false);
+                location.reload();
+                break;
+
             case MainMenuOption.HOST_GAME:
+                if (this.secondaryMode) {
+                    break;
+                }
+
                 Net.hostGame();
                 break;
 
             case MainMenuOption.JOIN_GAME:
+                if (this.secondaryMode) {
+                    break;
+                }
+
                 Net.joinGame();
                 break;
 
             case MainMenuOption.SINGLE_PLAYER:
+                if (this.secondaryMode) {
+                    break;
+                }
+
                 this.$options.find('.opt.o3').text('Yeah, had no time for that. Sorry.');
                 AudioOut.playSfx('too_bad.wav');
                 break;
@@ -76,9 +101,7 @@ var MainMenu = {
             optionChange = +1;
         }
 
-        if (optionChange != 0) {
-            AudioOut.playSfx('ui_tick.wav');
-
+        var doOptionChange = function () {
             this.currentOption += optionChange;
 
             var optLength = this.$options.find('.opt').length;
@@ -91,6 +114,20 @@ var MainMenu = {
 
             this.$options.find('.opt').removeClass('active');
             $(this.$options.find('.opt').get(this.currentOption)).addClass('active');
+        }.bind(this);
+
+        if (optionChange != 0) {
+            AudioOut.playSfx('ui_tick.wav');
+
+            do {
+                doOptionChange();
+            } while (!$(this.$options.find('.opt').get(this.currentOption)).is(':visible'));
+        }
+
+        if (Net.busy) {
+            this.disableOptions();
+        } else {
+            this.enableOptions();
         }
     },
 
@@ -105,10 +142,22 @@ var MainMenu = {
     },
 
     enableOptions: function () {
-        this.$options.show();
+        if (this.secondaryMode == false) {
+            return;
+        }
+
+        this.secondaryMode = false;
+        this.$options.find('.primary').show();
+        this.$options.find('.secondary').hide();
     },
 
     disableOptions: function () {
-        this.$options.hide();
-    },
+        if (this.secondaryMode == false) {
+            true;
+        }
+
+        this.secondaryMode = true;
+        this.$options.find('.primary').hide();
+        this.$options.find('.secondary').show();
+    }
 };

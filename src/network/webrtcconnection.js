@@ -13,12 +13,17 @@ var WebRtcConnection = Class.extend({
 
     remoteId: null,
 
+    isLive: false,
+
+    timeoutCheck: null,
+
     init: function (id) {
         this.id = id;
 
         this.offer = null;
         this.isAnswering = false;
         this.isBeingAnswered = false;
+        this.isLive = false;
 
         this.peerConnection = new PeerConnection({
             "iceServers": window.iceServers
@@ -36,11 +41,26 @@ var WebRtcConnection = Class.extend({
 
         this.dataChannel = this.peerConnection.createDataChannel('dc' + id);
         this.dataChannel.onopen = function () {
-            console.warn('!!!!!!!!!!!!!!!!!!!! THE DATA CHANNEL IS NOW OPEN MOTHAF#!@#A');
-        };
+            this.isLive = true;
+            console.info('[Net:Rtc][#' + this.id + '] Data channel is now open. Connection is now live!');
+        }.bind(this);
+        this.dataChannel.onclose = function () {
+            this.isLive = false;
+            console.error('[Net:Rtc][#' + this.id + '] Data channel was closed. Connection is now dead.');
+        }.bind(this);
+        this.dataChannel.onmessage = function (data) {
+            Router.processData(data);
+        }.bind(this);
+
+        window.setInterval(this.checkAlive, 1000);
+    },
+
+    checkAlive: function () {
+
     },
 
     reset: function () {
+        window.clearInterval(this.timeoutCheck);
         this.init();
     },
 
