@@ -132,9 +132,12 @@ var MainMenu = {
         if (optionChange != 0) {
             AudioOut.playSfx('ui_tick.wav');
 
+            var breakout = 10;
+
             do {
                 doOptionChange();
-            } while (!$(this.$options.find('.opt').get(this.currentOption)).is(':visible'));
+                breakout--;
+            } while (!$(this.$options.find('.opt').get(this.currentOption)).is(':visible') && breakout > 0);
         }
 
         if (Net.busy) {
