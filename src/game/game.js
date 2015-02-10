@@ -7,6 +7,8 @@ var Game = {
 
     stage: null,
 
+    inGame: false,
+
     init: function () {
         console.info('[Game] Initializing BitSmashers R' + this.buildCode + '...');
 
@@ -32,10 +34,14 @@ var Game = {
     loading: false,
 
     loadStage: function (id) {
+        $('#mainmenu').fadeOut();
+        $('#game').fadeIn();
+
         var stage = this.stages.load(id);
         stage.onLoaded = function () {
             Game.stage = stage;
             Game.stage.setPlayer(new TheDoctorFighter());
+            Game.inGame = true;
             Camera.centerToMap();
         };
     },

@@ -26,6 +26,11 @@ var Net = {
             return;
         }
 
+        if (Game.inGame) {
+            // Do not accept new offers while in game.
+            return;
+        }
+
         if (this.alreadyKnowConnection(offerData.connectionId)) {
             // We already know this peer, do not open another connection to it.
             return;

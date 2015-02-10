@@ -143,5 +143,21 @@ var Lobby = {
         }
 
         this.syncUi();
+    },
+
+    startGame: function () {
+        if (!Net.isHost) {
+            return;
+        }
+
+        var mapId = 'green';
+
+        var gameStart = {
+            op: Opcode.START_GAME,
+            mapId: mapId
+        };
+
+        Net.broadcastMessage(gameStart);
+        Router.processData(gameStart);
     }
 };

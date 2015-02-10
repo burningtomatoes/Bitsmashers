@@ -1,8 +1,9 @@
 var MainMenuOption = {
-    CANCEL: 0,
-    HOST_GAME: 1,
-    JOIN_GAME: 2,
-    SINGLE_PLAYER: 3
+    START_GAME: 0,
+    CANCEL: 1,
+    HOST_GAME: 2,
+    JOIN_GAME: 3,
+    SINGLE_PLAYER: 4
 };
 
 var MainMenu = {
@@ -12,7 +13,7 @@ var MainMenu = {
     $connecting: $('#mainmenu .connecting'),
     $options: $('#mainmenu .options'),
 
-    currentOption: 1,
+    currentOption: 2,
     secondaryMode: false,
 
     show: function () {
@@ -59,6 +60,14 @@ var MainMenu = {
                 location.reload();
                 break;
 
+            case MainMenuOption.START_GAME:
+                if (!this.secondaryMode || !Net.isHost) {
+                    break;
+                }
+
+                Lobby.startGame();
+                break;
+
             case MainMenuOption.HOST_GAME:
                 if (this.secondaryMode) {
                     break;
@@ -87,6 +96,10 @@ var MainMenu = {
     },
 
     update: function () {
+        if (Game.inGame) {
+            return;
+        }
+
         var keyUp = Keyboard.wasKeyPressed(KeyCode.W) || Keyboard.wasKeyPressed(KeyCode.UP);
         var keyDown = Keyboard.wasKeyPressed(KeyCode.S) || Keyboard.wasKeyPressed(KeyCode.DOWN);
         var keySubmit = Keyboard.wasKeyPressed(KeyCode.SPACE) || Keyboard.wasKeyPressed(KeyCode.RETURN) || Keyboard.wasKeyPressed(KeyCode.ENTER);
@@ -161,5 +174,11 @@ var MainMenu = {
         this.$options.find('.primary').hide();
         this.$options.find('.secondary').show();
         this.$element.find('.lobby').show();
+
+        if (!Net.isHost) {
+            this.$options.find('.opt.o0').hide();
+        } else {
+            this.$options.find('.opt.o0').show();
+        }
     }
 };
