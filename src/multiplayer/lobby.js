@@ -112,7 +112,7 @@ var Lobby = {
 
             playerData.push({
                 number: player.number,
-                remoteId: player.connection == null ? null : player.connection.remoteId,
+                remoteId: player.connection == null ? null : player.connection.id,
                 character: 'thedoctor'
             });
         }

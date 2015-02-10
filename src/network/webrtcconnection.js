@@ -45,11 +45,9 @@ var WebRtcConnection = Class.extend({
         this.peerConnection.ondatachannel = function (e) {
             console.info('[Net:Rtc][#' + this.id + '] Received remote data channel.');
 
-            e.channel.onmessage = function (e) {
-                var parsed = JSON.parse(e.data);
-                console.info('[Net:Rtc][#' + this.id + '] Received data', parsed);
-                Router.processData(parsed);
-            }.bind(this);
+            e.channel.onmessage = this.onChannelMessage.bind(this);
+            e.channel.onerror = this.onChannelError.bind(this);
+            e.channel.onclose = this.onChannelClosed.bind(this);
         }.bind(this);
 
         this.dataChannel = this.peerConnection.createDataChannel('dc' + id, { reliable: false });
@@ -58,16 +56,37 @@ var WebRtcConnection = Class.extend({
             console.info('[Net:Rtc][#' + this.id + '] Data channel is now open. Connection is now live!');
             Net.onUserConnected(this);
         }.bind(this);
-        this.dataChannel.onclose = function (e) {
-            this.isLive = false;
-            console.error('[Net:Rtc][#' + this.id + '] Data channel was closed. Connection is now dead.');
-            Net.onUserDisconnected(this);
-        }.bind(this);
-        this.dataChannel.onerror = function (error) {
-            console.error('[Net:Rtc][#' + this.id + '] Data channel error:', error);
-        }.bind(this);
+        this.dataChannel.onmessage = this.onChannelMessage.bind(this);
+        this.dataChannel.onerror = this.onChannelError.bind(this);
+        this.dataChannel.onclose = this.onChannelClosed.bind(this);
 
-        window.setInterval(this.checkAlive.bind(this), 5000);
+        window.setInterval(this.checkAlive.bind(this), 1000);
+    },
+
+    onChannelMessage: function (e) {
+        var data = e.data;
+
+        // Ping - pong (keepalive)
+        if (data == 0) {
+            this.dataChannel.send(1);
+            return;
+        } else if (data == 1) {
+            return;
+        }
+
+        var parsed = JSON.parse(data);
+        console.info('[Net:Rtc][#' + this.id + '] Received data', parsed);
+        Router.processData(parsed);
+    },
+
+    onChannelError: function (error) {
+        console.error('[Net:Rtc][#' + this.id + '] Data channel error:', error);
+    },
+
+    onChannelClosed: function (e) {
+        this.isLive = false;
+        console.error('[Net:Rtc][#' + this.id + '] Data channel was closed. Connection is now dead.');
+        Net.onUserDisconnected(this);
     },
 
     onDataOpen: function () {
@@ -83,7 +102,6 @@ var WebRtcConnection = Class.extend({
     },
 
     checkAlive: function () {
-        console.log('ca');
         if (this.isLive) {
             try {
                 this.dataChannel.send('0');
@@ -93,7 +111,7 @@ var WebRtcConnection = Class.extend({
         if ((this.isAnswering || this.isBeingAnswered) && !this.isLive) {
             this.aliveChecksFailed++;
 
-            if (this.aliveChecksFailed >= 3) {
+            if (this.aliveChecksFailed >= 30) {
                 console.error('[Net:Rtc][#' + this.id + '] This connection does not appear to be responding, resetting (keep alive failed)');
                 this.reset();
             }
