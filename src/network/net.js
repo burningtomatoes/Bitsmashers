@@ -2,6 +2,8 @@ var Net = {
     isHost: false,
     busy: false,
 
+    slotId: 0,
+
     connections: [],
 
     init: function () {
@@ -95,7 +97,7 @@ var Net = {
 
         var conn = this.getConnectionBySessionId(iceData.connectionId);
 
-        if (conn == null) {
+        if (conn == null || conn.isLive) {
             return;
         }
 
@@ -130,6 +132,8 @@ var Net = {
         this.isHost = true;
         this.busy = true;
 
+        Lobby.reset();
+
         // We are the host. Await offers that we see, and send answers to them as we go.
         // Begin by preparing three peer connections.
         for (var i = 0; i < 3; i++) {
@@ -149,6 +153,8 @@ var Net = {
 
         this.isHost = false;
         this.busy = true;
+
+        Lobby.reset();
 
         // We are trying to join an existing game. Send an offer into the sky and hope someone will respond.
         // Begin by preparing our local connection.
@@ -187,5 +193,56 @@ var Net = {
         }
 
         return this.connections[id];
+    },
+
+    broadcastMessage: function (message) {
+        if (!this.isHost) {
+            this.sendMessageTo(0, message);
+            return;
+        }
+
+        for (var i = 0; i < this.connections.length; i++) {
+            var conn = this.connections[i];
+            conn.sendMessage(message);
+        }
+    },
+
+    sendMessageTo: function (id, message) {
+        for (var i = 0; i < this.connections.length; i++) {
+            var conn = this.connections[i];
+
+            if (conn.id === id) {
+                conn.sendMessage(message);
+                return true;
+            }
+        }
+
+        return false;
+    },
+
+    onUserConnected: function (connection) {
+        if (!Net.isHost) {
+            return;
+        }
+
+         var welcomeMessage = {
+             op: Opcode.WELCOME,
+             hello: "Hi there!",
+             yourId: connection.id
+         };
+
+        this.sendMessageTo(connection.id, welcomeMessage);
+
+        Lobby.onUserConnected(connection);
+    },
+
+    onUserDisconnected: function (connection) {
+        if (!Net.isHost) {
+            return;
+        }
+
+        Lobby.onUserDisconnected(connection);
+
+        connection.reset();
     }
 };

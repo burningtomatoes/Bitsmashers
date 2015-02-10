@@ -17,6 +17,8 @@ var WebRtcConnection = Class.extend({
 
     timeoutCheck: null,
 
+    aliveChecksFailed: 0,
+
     init: function (id) {
         this.id = id;
 
@@ -24,6 +26,7 @@ var WebRtcConnection = Class.extend({
         this.isAnswering = false;
         this.isBeingAnswered = false;
         this.isLive = false;
+        this.aliveChecksFailed = 0;
 
         this.peerConnection = new PeerConnection({
             "iceServers": window.iceServers
@@ -39,29 +42,69 @@ var WebRtcConnection = Class.extend({
             }
         }.bind(this);
 
-        this.dataChannel = this.peerConnection.createDataChannel('dc' + id);
-        this.dataChannel.onopen = function () {
-            this.isLive = true;
-            console.info('[Net:Rtc][#' + this.id + '] Data channel is now open. Connection is now live!');
-        }.bind(this);
-        this.dataChannel.onclose = function () {
-            this.isLive = false;
-            console.error('[Net:Rtc][#' + this.id + '] Data channel was closed. Connection is now dead.');
-        }.bind(this);
-        this.dataChannel.onmessage = function (data) {
-            Router.processData(data);
+        this.peerConnection.ondatachannel = function (e) {
+            console.info('[Net:Rtc][#' + this.id + '] Received remote data channel.');
+
+            e.channel.onmessage = function (e) {
+                var parsed = JSON.parse(e.data);
+                console.info('[Net:Rtc][#' + this.id + '] Received data', parsed);
+                Router.processData(parsed);
+            }.bind(this);
         }.bind(this);
 
-        window.setInterval(this.checkAlive, 1000);
+        this.dataChannel = this.peerConnection.createDataChannel('dc' + id, { reliable: false });
+        this.dataChannel.onopen = function (e) {
+            this.isLive = true;
+            console.info('[Net:Rtc][#' + this.id + '] Data channel is now open. Connection is now live!');
+            Net.onUserConnected(this);
+        }.bind(this);
+        this.dataChannel.onclose = function (e) {
+            this.isLive = false;
+            console.error('[Net:Rtc][#' + this.id + '] Data channel was closed. Connection is now dead.');
+            Net.onUserDisconnected(this);
+        }.bind(this);
+        this.dataChannel.onerror = function (error) {
+            console.error('[Net:Rtc][#' + this.id + '] Data channel error:', error);
+        }.bind(this);
+
+        window.setInterval(this.checkAlive.bind(this), 5000);
+    },
+
+    onDataOpen: function () {
+
+    },
+
+    sendMessage: function (data) {
+        if (!this.isLive) {
+            return;
+        }
+
+        this.dataChannel.send(JSON.stringify(data));
     },
 
     checkAlive: function () {
+        console.log('ca');
+        if (this.isLive) {
+            try {
+                this.dataChannel.send('0');
+            } catch (e) { }
+        }
 
+        if ((this.isAnswering || this.isBeingAnswered) && !this.isLive) {
+            this.aliveChecksFailed++;
+
+            if (this.aliveChecksFailed >= 3) {
+                console.error('[Net:Rtc][#' + this.id + '] This connection does not appear to be responding, resetting (keep alive failed)');
+                this.reset();
+            }
+        } else {
+            this.aliveChecksFailed = 0;
+        }
     },
 
     reset: function () {
         window.clearInterval(this.timeoutCheck);
-        this.init();
+        this.init(this.id);
     },
 
     createOffer: function (callback) {
@@ -115,6 +158,10 @@ var WebRtcConnection = Class.extend({
     },
 
     processIceCandidate: function (candidate) {
+        if (this.isLive) {
+            return;
+        }
+
         this.peerConnection.addIceCandidate(new IceCandidate(candidate));
     }
 });
