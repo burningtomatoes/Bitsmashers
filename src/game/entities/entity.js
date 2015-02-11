@@ -33,6 +33,8 @@ var Entity = Class.extend({
 
     renderer: null,
 
+    isProjectile: false,
+
     init: function () {
         this.posX = 0;
         this.posY = 0;
@@ -46,6 +48,7 @@ var Entity = Class.extend({
         this.jumped = false;
         this.landed = false;
         this.doubleJumped = false;
+        this.isProjectile = false;
     },
 
     isMoving: function () {
@@ -66,6 +69,48 @@ var Entity = Class.extend({
     },
 
     update: function () {
+        if (this.isProjectile) {
+            var projectedPos = this.projectRect(this.posX + this.velocityX, this.posY + this.velocityY);
+            var projectedIntersects = this.map.checkCollisions(this, projectedPos);
+
+            this.velocityX *= 0.99;
+
+            if (Math.abs(this.velocityX) <= 0.1) {
+                this.map.remove(this);
+            }
+            else if (projectedIntersects.length > 0) {
+                // Do we still have enough juice in us to defeat other entities?
+                var willSelfShatter = Math.abs(this.velocityX) < 5;
+                var intersectWith = projectedIntersects[0];
+
+                // Slow ourselves down
+                this.velocityX /= 2;
+                this.velocityY /= 2;
+
+                if (intersectWith.isBlock) {
+                    if (!willSelfShatter) {
+                        AudioOut.playSfx('impact.wav', 0.5);
+                        this.map.remove(intersectWith);
+                    }
+                } else if (intersectWith.isPlayer) {
+                    AudioOut.playSfx('pain.wav', 0.5);
+                    var throwbackPower = willSelfShatter ? 6 : 16;
+
+                    if (this.velocityX > 0) {
+                        // Coming in from the right
+                        throwbackPower = -throwbackPower;
+                    }
+
+                    intersectWith.velocityX += throwbackPower;
+                }
+
+                if (willSelfShatter) {
+                    AudioOut.playSfx('impact.wav', 0.5);
+                    this.map.remove(this);
+                }
+            }
+        }
+
         if ((this.velocityY < 0 && this.willCollideUp()) || (this.velocityY > 0 && this.willCollideDown())) {
             this.velocityY = 0;
         }
@@ -74,7 +119,7 @@ var Entity = Class.extend({
             this.velocityX = 0;
         }
 
-        if (this.isPlayer && !this.isLocalPlayer() && !this.jumped && this.isJumping()) {
+        if (this.isPlayer && !this.isProjectile && !this.isLocalPlayer() && !this.jumped && this.isJumping()) {
             AudioOut.playSfx('jump.wav', 0.25);
             this.jumped = true;
         }

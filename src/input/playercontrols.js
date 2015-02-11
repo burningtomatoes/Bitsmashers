@@ -6,7 +6,7 @@ var PlayerControls = {
 
         var p = Game.stage.player;
 
-        if (p.dead) {
+        if (p.dead || p.isProjectile) {
             return;
         }
 
@@ -62,8 +62,23 @@ var PlayerControls = {
 
             if (blocks.length > 0) {
                 var block = blocks[0];
-                p.pickUp(block);
+
+                if (!block.isProjectile) {
+                    p.pickUp(block);
+                }
             }
+        }
+        else if (keyAttack && p.isAttacking) {
+            // Throw!
+            p.attackingWith.isProjectile = true;
+            p.attackingWith.causesCollision = false;
+            p.attackingWith.receivesCollision = true;
+            p.attackingWith.affectedByGravity = true;
+            p.attackingWith.velocityX = p.direction == Direction.LEFT ? -32 : 32;
+            p.attackingWith = null;
+            p.isAttacking = null;
+            p.landed = true;
+            p.jumped = false;
         }
 
         // NET SYNC ////////////////////////////////////////////////////////////////////////////////////////////////////
