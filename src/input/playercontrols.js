@@ -10,6 +10,8 @@ var PlayerControls = {
             return;
         }
 
+        var didChange = false;
+
         // MOVE //////////////////////////////////////////////////////////////////////////////////////////////////////
         var keyMoveUp       = Keyboard.wasKeyPressed(KeyCode.W) || Keyboard.wasKeyPressed(KeyCode.UP);
         var keyMoveLeft     = Keyboard.isKeyDown(KeyCode.A) || Keyboard.isKeyDown(KeyCode.LEFT);
@@ -38,6 +40,8 @@ var PlayerControls = {
             if (p.velocityX <= -p.movementSpeed) {
                 p.velocityX = -p.movementSpeed;
             }
+
+            didChange = true;
         }
         else if (keyMoveRight && p.canMoveRight()) {
             p.velocityX += p.movementSpeed;
@@ -45,9 +49,14 @@ var PlayerControls = {
             if (p.velocityX >= p.movementSpeed) {
                 p.velocityX = p.movementSpeed;
             }
+
+            didChange = true;
         }
         else {
-            p.velocityX = 0;
+            if (p.velocityX != null) {
+                p.velocityX = 0;
+                didChange = true;
+            }
         }
 
         // ATTACK //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,6 +74,7 @@ var PlayerControls = {
 
                 if (!block.isProjectile) {
                     p.pickUp(block);
+                    didChange = true;
                 }
             }
         }
@@ -79,15 +89,18 @@ var PlayerControls = {
             p.isAttacking = null;
             p.landed = true;
             p.jumped = false;
+            didChange = true;
         }
 
         // NET SYNC ////////////////////////////////////////////////////////////////////////////////////////////////////
-        var syncMessage = p.prepareSyncMessage();
+        if (didChange) {
+            var syncMessage = p.prepareSyncMessage();
 
-        if (Net.isHost) {
-            Router.processData(syncMessage);
-        } else {
-            Net.getConnection().sendMessage(syncMessage);
+            if (Net.isHost) {
+                Router.processData(syncMessage);
+            } else {
+                Net.getConnection().sendMessage(syncMessage);
+            }
         }
     }
 };
