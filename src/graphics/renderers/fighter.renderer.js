@@ -42,7 +42,25 @@ var FighterRenderer = Renderer.extend({
         }
     },
 
+    getPlayerColor: function () {
+        switch (this.entity.playerNumber) {
+            default:
+            case 1:
+                return 'red';
+            case 2:
+                return 'yellow';
+            case 3:
+                return 'blue';
+            case 4:
+                return 'green';
+        }
+    },
+
     draw: function (ctx) {
+        ctx.fillStyle = this.getPlayerColor();
+        ctx.font="10px pixelmix";
+        ctx.fillText("P" + this.entity.playerNumber, Camera.translateX(this.entity.posX + this.entity.width / 4 + 2), Camera.translateY(this.entity.posY));
+
         ctx.save();
 
         if (this.entity.direction == Direction.LEFT) {
@@ -53,6 +71,14 @@ var FighterRenderer = Renderer.extend({
         }
 
         this.selectAnimation().draw(ctx, 0, 0);
+
+        // Player indicator
+
+        ctx.beginPath();
+        ctx.moveTo(this.entity.width / 4, 5);
+        ctx.lineTo(this.entity.width / 4 + this.entity.width / 2, 5);
+        ctx.lineTo(this.entity.width / 4 + this.entity.width / 4, 15);
+        ctx.fill();
 
         ctx.restore();
     }
