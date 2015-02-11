@@ -116,7 +116,7 @@ var FighterEntity = Entity.extend({
 
         if (this.isAttacking && this.attackingWith != null) {
             this.attackingWith.posX = this.posX;
-            this.attackingWith.posY = this.posY - (this.attackingWith.height / 2);
+            this.attackingWith.posY = this.rect().top - this.attackingWith.height;
 
             this.attackingWith.causesCollision = true;
             this.attackingWith.causesTouchDamage = false;
