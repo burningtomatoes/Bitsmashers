@@ -76,7 +76,15 @@ var Entity = Class.extend({
             this.velocityX *= 0.99;
 
             if (Math.abs(this.velocityX) <= 0.1) {
-                this.map.remove(this);
+                if (this.isPlayer) {
+                    this.isProjectile = false;
+                    this.affectedByGravity = true;
+                    this.causesCollision = true;
+                    this.receivesCollision = true;
+                } else {
+                    AudioOut.playSfx('impact.wav', 0.2);
+                    this.map.remove(this);
+                }
             }
             else if (projectedIntersects.length > 0) {
                 // Do we still have enough juice in us to defeat other entities?
@@ -93,15 +101,20 @@ var Entity = Class.extend({
                         this.map.remove(intersectWith);
                     }
                 } else if (intersectWith.isPlayer) {
+                    console.log('I hit a player!!!!');
                     AudioOut.playSfx('pain.wav', 0.5);
-                    var throwbackPower = willSelfShatter ? 6 : 16;
+                    var throwbackPower = willSelfShatter ? 16 : 32;
 
-                    if (this.velocityX > 0) {
+                    if (this.velocityX < 0) {
                         // Coming in from the right
                         throwbackPower = -throwbackPower;
                     }
 
                     intersectWith.velocityX += throwbackPower;
+                    intersectWith.affectedByGravity = true;
+                    intersectWith.causesCollision = false;
+                    intersectWith.receivesCollision = false;
+                    intersectWith.isProjectile = true;
                 }
 
                 if (willSelfShatter) {

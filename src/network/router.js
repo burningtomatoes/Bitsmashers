@@ -35,6 +35,15 @@ var Router = {
                 var e = Game.stage.getPlayerByNumber(data.p);
                 e.applySyncMessage(data);
                 break;
+            case Opcode.THROW:
+                if (Net.isHost && data.r !== 1) {
+                    data.r = 1;
+                    Net.broadcastMessage(data);
+                }
+
+                var e = Game.stage.getPlayerByNumber(data.p);
+                e.doThrow();
+                break;
             case Opcode.GO:
                 Log.clear();
                 $('#go').show().delay(1000).fadeOut('slow');

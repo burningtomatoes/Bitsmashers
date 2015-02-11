@@ -129,6 +129,31 @@ var FighterEntity = Entity.extend({
         }
     },
 
+    doThrow: function () {
+        this.attackingWith.isProjectile = true;
+        this.attackingWith.causesCollision = false;
+        this.attackingWith.receivesCollision = true;
+        this.attackingWith.affectedByGravity = true;
+        this.attackingWith.velocityX = this.direction == Direction.LEFT ? -32 : 32;
+
+        this.attackingWith = null;
+        this.isAttacking = false;
+
+        this.landed = true;
+        this.jumped = false;
+
+        var netPayload = {
+            op: Opcode.THROW,
+            p: this.playerNumber
+        };
+
+        if (Net.isHost) {
+            Net.broadcastMessage(netPayload);
+        } else {
+            Net.getConnection().sendMessage(netPayload);
+        }
+    },
+
     shouldDie: function () {
         return this.posY >= Game.stage.height;
     },
