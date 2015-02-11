@@ -86,11 +86,30 @@ var FighterEntity = Entity.extend({
     pickUp: function (entity) {
         this.isAttacking = true;
         this.attackingWith = entity;
+
+        // Check if any other entities were trying to attack (steal)
+        for (var i = 0; i < Game.stage.entities.length; i++) {
+            var e = Game.stage.entities[i];
+
+            if (e != this && e.isAttacking && e.attackingWith == this.attackingWith) {
+                e.isAttacking = false;
+                e.attackingWith = null;
+                Log.writeMessage('Player ' + this.playerNumber + ' blocked Player ' + e.playerNumber + '!');
+                e.forceDisableAttack = true;
+                break;
+            }
+        }
     },
 
     update: function () {
         if (this.dead) {
             return;
+        }
+
+        if (this.forceDisableAttack) {
+            this.isAttacking = false;
+            this.attackingWith = null;
+            this.forceDisableAttack = false;
         }
 
         this._super();
