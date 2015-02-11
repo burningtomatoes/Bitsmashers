@@ -56,10 +56,25 @@ var FighterRenderer = Renderer.extend({
         }
     },
 
+    indicatorTimer: 0,
+
     draw: function (ctx) {
-        ctx.fillStyle = this.getPlayerColor();
-        ctx.font="10px pixelmix";
-        ctx.fillText("P" + this.entity.playerNumber, Camera.translateX(this.entity.posX + this.entity.width / 4 + 2), Camera.translateY(this.entity.posY));
+        var showIndicator = !this.entity.isMoving();
+
+        if (!showIndicator && Game.stage.unlocked) {
+            this.indicatorTimer = 30;
+        }
+
+        if (this.indicatorTimer > 0) {
+            this.indicatorTimer--;
+            showIndicator = false;
+        }
+
+        if (showIndicator) {
+            ctx.fillStyle = this.getPlayerColor();
+            ctx.font="10px pixelmix";
+            ctx.fillText("P" + this.entity.playerNumber, Camera.translateX(this.entity.posX + this.entity.width / 4 + 2), Camera.translateY(this.entity.posY));
+        }
 
         ctx.save();
 
@@ -72,13 +87,13 @@ var FighterRenderer = Renderer.extend({
 
         this.selectAnimation().draw(ctx, 0, 0);
 
-        // Player indicator
-
-        ctx.beginPath();
-        ctx.moveTo(this.entity.width / 4, 5);
-        ctx.lineTo(this.entity.width / 4 + this.entity.width / 2, 5);
-        ctx.lineTo(this.entity.width / 4 + this.entity.width / 4, 15);
-        ctx.fill();
+        if (showIndicator) {
+            ctx.beginPath();
+            ctx.moveTo(this.entity.width / 4, 5);
+            ctx.lineTo(this.entity.width / 4 + this.entity.width / 2, 5);
+            ctx.lineTo(this.entity.width / 4 + this.entity.width / 4, 15);
+            ctx.fill();
+        }
 
         ctx.restore();
     }
