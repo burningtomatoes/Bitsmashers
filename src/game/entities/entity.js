@@ -66,10 +66,11 @@ var Entity = Class.extend({
     },
 
     update: function () {
-        if (this.willCollideUp() || this.willCollideDown()) {
+        if ((this.velocityY < 0 && this.willCollideUp()) || (this.velocityY > 0 && this.willCollideDown())) {
             this.velocityY = 0;
         }
-        if (this.willCollideLeft() || this.willCollideRight()) {
+
+        if ((this.velocityX < 0 && this.willCollideLeft()) || (this.velocityX > 0 && this.willCollideRight())) {
             this.velocityX = 0;
         }
 

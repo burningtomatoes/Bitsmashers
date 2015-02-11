@@ -32,7 +32,7 @@ var FighterRenderer = Renderer.extend({
     selectAnimation: function () {
         // TODO Attack anim
         if (this.entity.isMoving()) {
-            if (this.entity.isJumping() || this.entity.isFalling()) {
+            if (this.entity.isJumping() || this.entity.isFalling() || !this.entity.landed) {
                 return this.animJump;
             } else {
                 return this.animWalk;

@@ -11,6 +11,7 @@ var Stage = Class.extend({
     backgroundImage: null,
 
     player: null,
+    playerSpawns: [],
 
     gravity: 0.5,
 
@@ -117,22 +118,24 @@ var Stage = Class.extend({
         }
     },
 
-    update: function () {
-        // Process all pending entity removals
-        {
-            for (var i = 0; i < this.toRemove.length; i++) {
-                var removeEntity = this.toRemove[i];
-                var entityIdx = this.entities.indexOf(removeEntity);
+    processRemovals: function () {
+        for (var i = 0; i < this.toRemove.length; i++) {
+            var removeEntity = this.toRemove[i];
+            var entityIdx = this.entities.indexOf(removeEntity);
 
-                if (entityIdx === -1) {
-                    continue;
-                }
-
-                this.entities.splice(entityIdx, 1);
+            if (entityIdx === -1) {
+                continue;
             }
 
-            this.toRemove = [];
+            this.entities.splice(entityIdx, 1);
         }
+
+        this.toRemove = [];
+    },
+
+    update: function () {
+        // Process all pending entity removals
+        this.processRemovals();
 
         // Process all entities on the map
         {
@@ -141,5 +144,64 @@ var Stage = Class.extend({
                 entity.update();
             }
         }
+    },
+
+    syncPlayersOut: function () {
+        var playerData = [];
+
+        for (var i = 0; i < this.entities.length; i++) {
+            var entity = this.entities[i];
+
+            if (!entity.isPlayer) {
+                continue;
+            }
+
+            playerData.push({
+                fighter: entity.fighterType,
+                posX: entity.posX,
+                posY: entity.posY,
+                playerNumber: entity.player.number
+            });
+        }
+
+        var payload = {
+            op: Opcode.PLAYER_LIST,
+            players: playerData
+        };
+
+        Net.broadcastMessage(payload);
+    },
+
+    syncPlayersIn: function (data) {
+        // Despawn any players on the map
+        for (var i = 0; i < this.entities.length; i++) {
+            var entity = this.entities[i];
+
+            if (!entity.isPlayer) {
+                continue;
+            }
+
+            this.toRemove.push(entity);
+        }
+
+        this.processRemovals();
+
+        // Spawn players anew
+        for (var i = 0; i < data.players.length; i++) {
+            var playerData = data.players[i];
+
+            var fighter = new TheDoctorFighter();
+            fighter.posX = playerData.posX;
+            fighter.posY = playerData.posY;
+            fighter.playerNumber = playerData.playerNumber;
+
+            this.add(fighter);
+
+            if (fighter.playerNumber === Lobby.localPlayerNumber) {
+                this.setPlayer(fighter);
+            }
+        }
     }
+
+
 });

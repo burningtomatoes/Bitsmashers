@@ -58,10 +58,6 @@ var StageLoader = Loader.extend({
             var x = -1;
             var y = 0;
 
-            if (!layer.visible) {
-                continue;
-            }
-
             for (var j = 0; j < layer.data.length; j++) {
                 var tid = layer.data[j];
 
@@ -78,17 +74,39 @@ var StageLoader = Loader.extend({
 
                 tid--;
 
+                var layerType = 'regular';
+
+                if (layer.properties != null && layer.properties.type) {
+                    layerType = layer.properties.type;
+                }
+
                 var fullRows = Math.floor(tid / tilesPerRow);
                 var srcY = fullRows * Settings.TileSize;
                 var srcX = (tid * Settings.TileSize) - (fullRows * tilesPerRow * Settings.TileSize);
                 var destX = x * Settings.TileSize;
                 var destY = y * Settings.TileSize;
 
-                var entity = new BlockEntity();
-                entity.posX = destX;
-                entity.posY = destY;
-                entity.renderer = new BlockRenderer(entity, tilesetImg, srcX, srcY);
-                stage.add(entity);
+                switch (layerType) {
+                    default:
+
+                        var entity = new BlockEntity();
+                        entity.posX = destX;
+                        entity.posY = destY;
+                        entity.renderer = new BlockRenderer(entity, tilesetImg, srcX, srcY);
+                        stage.add(entity);
+
+                        break;
+
+                    case 'player_spawns':
+
+                        stage.playerSpawns.push({
+                            x: destX,
+                            y: destY
+                        });
+
+                        break;
+                }
+
             }
         }
     }

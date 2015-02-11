@@ -14,6 +14,9 @@ var Router = {
             case Opcode.START_GAME:
                 Game.loadStage(data.mapId);
                 break;
+            case Opcode.PLAYER_LIST:
+                Game.stage.syncPlayersIn(data);
+                break;
             default:
                 console.warn('[Net:Router] Unable to route message, unknown op', op);
                 break;

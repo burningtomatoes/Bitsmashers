@@ -1,7 +1,7 @@
 var Settings = {
     TileSize: 32,
 
-    DebugCollision: true,
+    DebugCollision: false,
     DebugSkipBootLogo: true,
 
     MatchmakingUri: 'http://localhost:2013'

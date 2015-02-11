@@ -26,7 +26,7 @@
              "type":"player_spawns"
             },
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":20,
          "x":0,
          "y":0

@@ -40,9 +40,31 @@ var Game = {
         var stage = this.stages.load(id);
         stage.onLoaded = function () {
             Game.stage = stage;
-            Game.stage.setPlayer(new TheDoctorFighter());
             Game.inGame = true;
+
             Camera.centerToMap();
+
+            if (Net.isHost) {
+                for (var i = 0; i < Lobby.players.length; i++) {
+                    var player = Lobby.players[i];
+
+                    var fighter = new TheDoctorFighter();
+                    fighter.playerNumber = player.number;
+                    fighter.player = player;
+
+                    var spawnPos = stage.playerSpawns[i];
+                    fighter.posX = spawnPos.x + (fighter.width / 2) + (Settings.TileSize / 2);
+                    fighter.posY = spawnPos.y + (fighter.height / 2) + (Settings.TileSize / 2);
+
+                    stage.add(fighter);
+
+                    if (Lobby.localPlayerNumber == player.number) {
+                        stage.setPlayer(fighter);
+                    }
+                }
+
+                stage.syncPlayersOut();
+            }
         };
     },
 
