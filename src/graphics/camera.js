@@ -72,13 +72,29 @@ var Camera = {
         }
         
         if (this.trackingEntity != null) {
-            var desiredX = Canvas.canvas.width / 2 - this.trackingEntity.posX - this.trackingEntity.width / 2;
-            var maxXSpace = Game.stage.width - Canvas.canvas.width;
-            this.x = MathHelper.clamp(desiredX, -maxXSpace, 0);
+            this.x = Canvas.canvas.width / 2 - this.trackingEntity.posX - this.trackingEntity.width / 2;
+            this.y = Canvas.canvas.height / 2 - this.trackingEntity.posY - this.trackingEntity.height / 2;
 
-            var desiredY = Canvas.canvas.height / 2 - this.trackingEntity.posY - this.trackingEntity.height / 2;
-            var maxYSpace = Game.stage.height - Canvas.canvas.height;
-            this.y = MathHelper.clamp(desiredY, -maxYSpace, 0);
+            var xMargin = 96;
+            var yMargin = -32;
+
+            var minX = -xMargin;
+            if (this.x < minX) {
+                this.x = minX;
+            }
+            var minY = -yMargin;
+            if (this.y < minY) {
+                this.y = minY;
+            }
+            yMargin = 96;
+            var maxY = (Canvas.canvas.height + yMargin) - Canvas.canvas.height;
+            if (this.y > maxY) {
+                this.y = maxY;
+            }
+            var maxX = (Canvas.canvas.width + xMargin) - Canvas.canvas.width;
+            if (this.x > maxX) {
+                this.x = maxX;
+            }
         }
 
         if (this.trackHard) {

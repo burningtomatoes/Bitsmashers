@@ -15,6 +15,9 @@ var Stage = Class.extend({
 
     gravity: 0.5,
 
+    unlocked: false,
+    unlockTimer: 0,
+
     init: function () {
         this.clear();
     },
@@ -22,6 +25,16 @@ var Stage = Class.extend({
     clear: function () {
         this.entities = [];
         this.toRemove = [];
+        this.unlocked = false;
+    },
+
+    beginCountdown: function () {
+        if (!Net.isHost) {
+            return;
+        }
+
+        this.unlocked = false;
+        this.unlockTimer = 60;
     },
 
     add: function (entity) {
@@ -158,6 +171,21 @@ var Stage = Class.extend({
             for (var j = 0; j < this.entities.length; j++) {
                 var entity = this.entities[j];
                 entity.update();
+            }
+        }
+
+        // Countdown to GO
+        if (Net.isHost && !this.unlocked)
+        {
+            if (this.unlockTimer > 0) {
+                this.unlockTimer--;
+
+                if (this.unlockTimer <= 0) {
+                    var mGo = { op: Opcode.GO };
+
+                    Net.broadcastMessage(mGo);
+                    Router.processData(mGo);
+                }
             }
         }
     },

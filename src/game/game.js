@@ -64,6 +64,7 @@ var Game = {
                 }
 
                 stage.syncPlayersOut();
+                stage.beginCountdown();
             }
         };
     },

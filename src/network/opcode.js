@@ -3,5 +3,6 @@ var Opcode = {
     LOBBY: 1,
     START_GAME: 2,
     PLAYER_LIST: 3,
-    PLAYER_UPDATE: 4
+    PLAYER_UPDATE: 4,
+    GO: 5
 };

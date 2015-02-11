@@ -1,6 +1,6 @@
 var PlayerControls = {
     update: function () {
-        if (Game.stage == null || Game.stage.player == null) {
+        if (Game.stage == null || Game.stage.player == null || !Game.stage.unlocked) {
             return;
         }
 
