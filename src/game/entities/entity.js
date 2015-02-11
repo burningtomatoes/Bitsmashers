@@ -202,7 +202,7 @@ var Entity = Class.extend({
 
         var projectedPosX = this.posX - this.movementSpeed;
         var projectedRect = this.projectRect(projectedPosX, null);
-        return !Game.stage.anyCollisions(this, projectedRect);
+        return !Game.stage.anyCollisions(this, projectedRect, this.attackingWith);
     },
 
     canMoveRight: function () {
@@ -212,7 +212,7 @@ var Entity = Class.extend({
 
         var projectedPosX = this.posX + this.movementSpeed;
         var projectedRect = this.projectRect(projectedPosX, null);
-        return !Game.stage.anyCollisions(this, projectedRect);
+        return !Game.stage.anyCollisions(this, projectedRect, this.attackingWith);
     },
 
     canMoveUp: function () {
@@ -222,7 +222,7 @@ var Entity = Class.extend({
 
         var projectedPosY = this.posY - this.movementSpeed;
         var projectedRect = this.projectRect(null, projectedPosY);
-        return !Game.stage.anyCollisions(this, projectedRect);
+        return !Game.stage.anyCollisions(this, projectedRect, this.attackingWith);
     },
 
     canMoveDown: function () {
@@ -232,7 +232,7 @@ var Entity = Class.extend({
 
         var projectedPosY = this.posY + this.movementSpeed;
         var projectedRect = this.projectRect(null, projectedPosY);
-        return !Game.stage.anyCollisions(this, projectedRect);
+        return !Game.stage.anyCollisions(this, projectedRect, this.attackingWith);
     },
 
     canMoveAnywhere: function () {
@@ -254,7 +254,7 @@ var Entity = Class.extend({
 
         var projectedPosX = this.posX - this.velocityX;
         var projectedRect = this.projectRect(projectedPosX, null);
-        return Game.stage.anyCollisions(this, projectedRect);
+        return Game.stage.anyCollisions(this, projectedRect, this.attackingWith);
     },
 
     willCollideRight: function () {
@@ -268,7 +268,7 @@ var Entity = Class.extend({
 
         var projectedPosX = this.posX + this.velocityX;
         var projectedRect = this.projectRect(projectedPosX, null);
-        return Game.stage.anyCollisions(this, projectedRect);
+        return Game.stage.anyCollisions(this, projectedRect, this.attackingWith);
     },
 
     willCollideUp: function () {
@@ -282,7 +282,7 @@ var Entity = Class.extend({
 
         var projectedPosY = this.posY + this.velocityY;
         var projectedRect = this.projectRect(null, projectedPosY);
-        return Game.stage.anyCollisions(this, projectedRect);
+        return Game.stage.anyCollisions(this, projectedRect, this.attackingWith);
     },
 
     willCollideDown: function () {
@@ -296,7 +296,7 @@ var Entity = Class.extend({
 
         var projectedPosY = this.posY + this.velocityY;
         var projectedRect = this.projectRect(null, projectedPosY);
-        return Game.stage.anyCollisions(this, projectedRect);
+        return Game.stage.anyCollisions(this, projectedRect, this.attackingWith);
     },
 
     rect: function () {

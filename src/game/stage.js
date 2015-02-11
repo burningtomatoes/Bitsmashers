@@ -93,7 +93,7 @@ var Stage = Class.extend({
         return false;
     },
 
-    checkCollisions: function (ourEntity, ourRect) {
+    checkCollisions: function (ourEntity, ourRect, ignoreEntity) {
         if (ourRect == null) {
             ourRect = ourEntity.rect();
         }
@@ -103,7 +103,7 @@ var Stage = Class.extend({
         for (var i = 0; i < this.entities.length; i++) {
             var entity = this.entities[i];
 
-            if (entity === ourEntity || !entity.causesCollision) {
+            if (entity === ourEntity || entity === ignoreEntity || !entity.causesCollision) {
                 continue;
             }
 
@@ -117,8 +117,8 @@ var Stage = Class.extend({
         return results;
     },
 
-    anyCollisions: function (ourEntity, ourRect) {
-        var cols = this.checkCollisions(ourEntity, ourRect);
+    anyCollisions: function (ourEntity, ourRect, ignoreEntity) {
+        var cols = this.checkCollisions(ourEntity, ourRect, ignoreEntity);
         return cols.length > 0;
     },
 
