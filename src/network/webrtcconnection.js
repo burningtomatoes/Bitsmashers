@@ -60,7 +60,7 @@ var WebRtcConnection = Class.extend({
         this.dataChannel.onerror = this.onChannelError.bind(this);
         this.dataChannel.onclose = this.onChannelClosed.bind(this);
 
-        window.setInterval(this.checkAlive.bind(this), 1000);
+        window.setInterval(this.checkAlive.bind(this), 500);
     },
 
     onChannelMessage: function (e) {
@@ -75,7 +75,6 @@ var WebRtcConnection = Class.extend({
         }
 
         var parsed = JSON.parse(data);
-        console.info('[Net:Rtc][#' + this.id + '] Received data', parsed);
         Router.processData(parsed);
     },
 
