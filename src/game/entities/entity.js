@@ -74,6 +74,11 @@ var Entity = Class.extend({
             this.velocityX = 0;
         }
 
+        if (this.isPlayer && !this.isLocalPlayer() && !this.jumped && this.isJumping()) {
+            AudioOut.playSfx('jump.wav', 0.25);
+            this.jumped = true;
+        }
+
         this.posX += this.velocityX;
         this.posY += this.velocityY;
 
@@ -100,6 +105,7 @@ var Entity = Class.extend({
             this.landed = true;
             this.jumped = false;
             this.doubleJumped = false;
+            AudioOut.playSfx('land.wav', (!this.isPlayer || !this.isLocalPlayer() ? 0.35 : 0.8));
         }
 
         if (this.renderer != null) {

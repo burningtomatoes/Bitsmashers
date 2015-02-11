@@ -23,6 +23,7 @@ var PlayerControls = {
                 p.doubleJumped = true;
             }
 
+            AudioOut.playSfx('jump.wav', 0.75);
             p.jumped = true;
         }
 
