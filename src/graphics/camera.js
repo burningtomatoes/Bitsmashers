@@ -76,7 +76,7 @@ var Camera = {
             this.y = Canvas.canvas.height / 2 - this.trackingEntity.posY - this.trackingEntity.height / 2;
 
             var xMargin = 96;
-            var yMargin = -32;
+            var yMargin = 32;
 
             var minX = -xMargin;
             if (this.x < minX) {
