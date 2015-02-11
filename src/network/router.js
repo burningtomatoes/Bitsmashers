@@ -40,6 +40,7 @@ var Router = {
                 $('#go').show().delay(1000).fadeOut('slow');
                 Game.stage.unlocked = true;
                 Camera.followEntity(Game.stage.player);
+                AudioOut.playSfx('startshot.wav', 0.25);
                 break;
             case Opcode.DEATH:
                 if (Net.isHost) {
