@@ -6,6 +6,7 @@ var PlayerControls = {
 
         var p = Game.stage.player;
 
+        // MOVE //////////////////////////////////////////////////////////////////////////////////////////////////////
         var keyMoveUp       = Keyboard.wasKeyPressed(KeyCode.W) || Keyboard.wasKeyPressed(KeyCode.UP);
         var keyMoveLeft     = Keyboard.isKeyDown(KeyCode.A) || Keyboard.isKeyDown(KeyCode.LEFT);
         var keyMoveRight    = Keyboard.isKeyDown(KeyCode.D) || Keyboard.isKeyDown(KeyCode.RIGHT);
@@ -51,6 +52,22 @@ var PlayerControls = {
             Router.processData(syncMessage);
         } else {
             Net.getConnection().sendMessage(syncMessage);
+        }
+
+        // ATTACK //////////////////////////////////////////////////////////////////////////////////////////////////////
+        var keyAttack = Keyboard.wasKeyPressed(KeyCode.ENTER) || Keyboard.wasKeyPressed(KeyCode.RETURN) || Keyboard.wasKeyPressed(KeyCode.SPACE);
+
+        if (keyAttack && !p.isAttacking && p.landed) {
+            // Determine attack radius (what can we pick up)
+            var attackRadius = p.attackRect();
+
+            // Find intersecting blocks
+            var blocks = p.map.checkCollisions(p, attackRadius);
+
+            if (blocks.length > 0) {
+                var block = blocks[0];
+                p.pickUp(block);
+            }
         }
     }
 };

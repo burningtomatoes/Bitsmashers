@@ -126,6 +126,14 @@ var Entity = Class.extend({
             ctx.lineWidth = 1;
             ctx.strokeStyle = 'red';
             ctx.stroke();
+
+            var sq = this.attackRect();
+
+            ctx.beginPath();
+            ctx.rect(Camera.translateX(sq.left), Camera.translateY(sq.top), sq.width, sq.height);
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'purple';
+            ctx.stroke();
         }
     },
 
@@ -254,5 +262,16 @@ var Entity = Class.extend({
         r.right = r.left + r.width;
         r.bottom = r.top + r.height;
         return r;
+    },
+
+    attackRect: function () {
+        var attackRadius = this.rect();
+        attackRadius.width /= 2;
+        attackRadius.height /= 2;
+        attackRadius.left += (attackRadius.width / 2);
+        attackRadius.top += attackRadius.height + (attackRadius.width / 2);
+        attackRadius.right = attackRadius.left + attackRadius.width;
+        attackRadius.bottom = attackRadius.top + attackRadius.height;
+        return attackRadius;
     }
 });

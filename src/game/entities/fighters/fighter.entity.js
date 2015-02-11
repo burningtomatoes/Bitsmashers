@@ -13,6 +13,8 @@ var FighterEntity = Entity.extend({
 
     playerNumber: 0,
 
+    isAttacking: false,
+
     init: function () {
         this._super();
 
@@ -23,6 +25,7 @@ var FighterEntity = Entity.extend({
         this.yMargin = 0;
 
         this.playerNumber = 0;
+        this.isAttacking = false;
     },
 
     configureRenderer: function () {
@@ -63,5 +66,24 @@ var FighterEntity = Entity.extend({
         this.posY = data.y;
         this.velocityX = data.vX;
         this.velocityY = data.vY;
+    },
+
+    pickUp: function (entity) {
+        this.isAttacking = true;
+        this.attackingWith = entity;
+
+        entity.causesCollision = false;
+        entity.causesTouchDamage = false;
+        entity.receivesCollision = false;
+        entity.affectedByGravity = false;
+    },
+
+    update: function () {
+        this._super();
+
+        if (this.isAttacking && this.attackingWith != null) {
+            this.attackingWith.posX = this.posX;
+            this.attackingWith.posY = this.posY - (this.attackingWith.height / 2);
+        }
     }
 });

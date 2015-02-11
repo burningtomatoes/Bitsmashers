@@ -30,8 +30,10 @@ var FighterRenderer = Renderer.extend({
     },
 
     selectAnimation: function () {
-        // TODO Attack anim
-        if (this.entity.isMoving()) {
+        if (this.entity.isAttacking) {
+            return this.animAttack;
+        }
+        else if (this.entity.isMoving()) {
             if (this.entity.isJumping() || this.entity.isFalling() || !this.entity.landed) {
                 return this.animJump;
             } else {
@@ -59,7 +61,7 @@ var FighterRenderer = Renderer.extend({
     indicatorTimer: 0,
 
     draw: function (ctx) {
-        var showIndicator = !this.entity.isMoving();
+        var showIndicator = !this.entity.isMoving() && !this.entity.isAttacking;
 
         if (!showIndicator && Game.stage.unlocked) {
             this.indicatorTimer = 30;

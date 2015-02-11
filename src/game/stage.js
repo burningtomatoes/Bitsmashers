@@ -88,7 +88,7 @@ var Stage = Class.extend({
         for (var i = 0; i < this.entities.length; i++) {
             var entity = this.entities[i];
 
-            if (entity === ourEntity) {
+            if (entity === ourEntity || !entity.causesCollision) {
                 continue;
             }
 
