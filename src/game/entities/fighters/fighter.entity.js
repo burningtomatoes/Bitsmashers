@@ -159,5 +159,12 @@ var FighterEntity = Entity.extend({
             Camera.centerToMap();
             $('#uded').show();
         }
+
+        if (this.attackingWith != null) {
+            Game.stage.remove(this.attackingWith);
+
+            this.isAttacking = false;
+            this.attackingWith = null;
+        }
     }
 });
