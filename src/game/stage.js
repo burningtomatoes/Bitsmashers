@@ -18,6 +18,8 @@ var Stage = Class.extend({
     unlocked: false,
     unlockTimer: 0,
 
+    idGen: 0,
+
     init: function () {
         this.clear();
     },
@@ -40,8 +42,21 @@ var Stage = Class.extend({
     add: function (entity) {
         if (this.entities.indexOf(entity) == -1) {
             entity.map = this;
+            entity.id = this.idGen++;
             this.entities.push(entity);
         }
+    },
+
+    getEntityById: function (id) {
+        for (var i = 0; i < this.entities.length; i++) {
+            var entity = this.entities[i];
+
+            if (entity.id === id) {
+                return entity;
+            }
+        }
+
+        return null;
     },
 
     setPlayer: function (entity) {

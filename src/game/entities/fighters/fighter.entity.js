@@ -57,7 +57,9 @@ var FighterEntity = Entity.extend({
             x: this.posX,
             y: this.posY,
             vX: this.velocityX,
-            vY: this.velocityY
+            vY: this.velocityY,
+            a: this.isAttacking,
+            aW: this.attackingWith != null ? this.attackingWith.id : null
         };
     },
 
@@ -66,16 +68,20 @@ var FighterEntity = Entity.extend({
         this.posY = data.y;
         this.velocityX = data.vX;
         this.velocityY = data.vY;
+        this.isAttacking = data.a;
+
+        if (data.aW != null) {
+            if (this.attackingWith == null || this.attackingWith.id != data.aW) {
+                this.attackingWith = Game.stage.getEntityById(data.aW);
+            }
+        } else {
+            this.attackingWith = null;
+        }
     },
 
     pickUp: function (entity) {
         this.isAttacking = true;
         this.attackingWith = entity;
-
-        entity.causesCollision = false;
-        entity.causesTouchDamage = false;
-        entity.receivesCollision = false;
-        entity.affectedByGravity = false;
     },
 
     update: function () {
@@ -84,6 +90,11 @@ var FighterEntity = Entity.extend({
         if (this.isAttacking && this.attackingWith != null) {
             this.attackingWith.posX = this.posX;
             this.attackingWith.posY = this.posY - (this.attackingWith.height / 2);
+
+            this.attackingWith.causesCollision = false;
+            this.attackingWith.causesTouchDamage = false;
+            this.attackingWith.receivesCollision = false;
+            this.attackingWith.affectedByGravity = false;
         }
     }
 });

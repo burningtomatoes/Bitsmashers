@@ -46,14 +46,6 @@ var PlayerControls = {
             p.velocityX = 0;
         }
 
-        var syncMessage = p.prepareSyncMessage();
-
-        if (Net.isHost) {
-            Router.processData(syncMessage);
-        } else {
-            Net.getConnection().sendMessage(syncMessage);
-        }
-
         // ATTACK //////////////////////////////////////////////////////////////////////////////////////////////////////
         var keyAttack = Keyboard.wasKeyPressed(KeyCode.ENTER) || Keyboard.wasKeyPressed(KeyCode.RETURN) || Keyboard.wasKeyPressed(KeyCode.SPACE);
 
@@ -68,6 +60,15 @@ var PlayerControls = {
                 var block = blocks[0];
                 p.pickUp(block);
             }
+        }
+
+        // NET SYNC ////////////////////////////////////////////////////////////////////////////////////////////////////
+        var syncMessage = p.prepareSyncMessage();
+
+        if (Net.isHost) {
+            Router.processData(syncMessage);
+        } else {
+            Net.getConnection().sendMessage(syncMessage);
         }
     }
 };
