@@ -11,6 +11,8 @@ var FighterEntity = Entity.extend({
     xMargin: 0,
     yMargin: 0,
 
+    playerNumber: 0,
+
     init: function () {
         this._super();
 
@@ -19,6 +21,8 @@ var FighterEntity = Entity.extend({
 
         this.xMargin = 0;
         this.yMargin = 0;
+
+        this.playerNumber = 0;
     },
 
     configureRenderer: function () {
@@ -37,5 +41,27 @@ var FighterEntity = Entity.extend({
         r.right = r.left + r.width;
         r.bottom = r.top + r.height;
         return r;
+    },
+
+    isLocalPlayer: function () {
+        return (Game.stage.player === this);
+    },
+
+    prepareSyncMessage: function () {
+        return {
+            op: Opcode.PLAYER_UPDATE,
+            p: this.playerNumber,
+            x: this.posX,
+            y: this.posY,
+            vX: this.velocityX,
+            vY: this.velocityY
+        };
+    },
+
+    applySyncMessage: function (data) {
+        this.posX = data.x;
+        this.posY = data.y;
+        this.velocityX = data.vX;
+        this.velocityY = data.vY;
     }
 });

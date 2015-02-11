@@ -36,6 +36,22 @@ var Stage = Class.extend({
         this.player = entity;
     },
 
+    getPlayerByNumber: function (no) {
+        for (var i = 0; i < this.entities.length; i++) {
+            var entity = this.entities[i];
+
+            if (!entity.isPlayer) {
+                continue;
+            }
+
+            if (entity.playerNumber === no) {
+                return entity;
+            }
+        }
+
+        return null;
+    },
+
     remove: function (entity) {
         if (this.entities.indexOf(entity) == -1) {
             return false;

@@ -43,5 +43,13 @@ var PlayerControls = {
         else {
             p.velocityX = 0;
         }
+
+        var syncMessage = p.prepareSyncMessage();
+
+        if (Net.isHost) {
+            Router.processData(syncMessage);
+        } else {
+            Net.getConnection().sendMessage(syncMessage);
+        }
     }
 };
