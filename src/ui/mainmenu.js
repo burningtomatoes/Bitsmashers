@@ -29,7 +29,7 @@ var MainMenu = {
 
         this.disableOptions();
 
-        this.showConnectNotice('Connecting to matchmaking service...');
+        this.showConnectNotice();
 
         this.$element.fadeIn('slow', function () {
             this.$cover.slideDown();
@@ -148,6 +148,11 @@ var MainMenu = {
     },
 
     showConnectNotice: function (text) {
+        if (text == null) {
+            this.$connecting.slideDown();
+            return;
+        }
+
         this.$connecting
             .text(text)
             .slideDown();
