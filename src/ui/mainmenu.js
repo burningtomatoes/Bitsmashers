@@ -89,7 +89,7 @@ var MainMenu = {
                     break;
                 }
 
-                this.$options.find('.opt.o3').text('Yeah, had no time for that. Sorry.');
+                this.$options.find('.opt.o4').text('Yeah, had no time for that. Sorry.');
                 AudioOut.playSfx('too_bad.wav');
                 break;
         }
