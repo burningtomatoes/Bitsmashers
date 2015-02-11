@@ -36,9 +36,19 @@ var Router = {
                 e.applySyncMessage(data);
                 break;
             case Opcode.GO:
+                Log.clear();
                 $('#go').show().delay(1000).fadeOut('slow');
                 Game.stage.unlocked = true;
                 Camera.followEntity(Game.stage.player);
+                break;
+            case Opcode.DEATH:
+                if (Net.isHost) {
+                    return;
+                }
+
+                var pNo = data.playerNumber;
+                var entity = Game.stage.getPlayerByNumber(pNo);
+                entity.die();
                 break;
             default:
                 console.warn('[Net:Router] Unable to route message, unknown op', op);

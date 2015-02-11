@@ -36,6 +36,7 @@ var Game = {
     loadStage: function (id) {
         $('#mainmenu').fadeOut();
         $('#game').fadeIn();
+        $('#uded').hide();
 
         var stage = this.stages.load(id);
         stage.onLoaded = function () {

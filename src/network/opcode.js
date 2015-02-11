@@ -4,5 +4,6 @@ var Opcode = {
     START_GAME: 2,
     PLAYER_LIST: 3,
     PLAYER_UPDATE: 4,
-    GO: 5
+    GO: 5,
+    DEATH: 6
 };

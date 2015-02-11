@@ -15,6 +15,8 @@ var FighterEntity = Entity.extend({
 
     isAttacking: false,
 
+    dead: false,
+
     init: function () {
         this._super();
 
@@ -26,6 +28,8 @@ var FighterEntity = Entity.extend({
 
         this.playerNumber = 0;
         this.isAttacking = false;
+
+        this.dead = false;
     },
 
     configureRenderer: function () {
@@ -85,6 +89,10 @@ var FighterEntity = Entity.extend({
     },
 
     update: function () {
+        if (this.dead) {
+            return;
+        }
+
         this._super();
 
         if (this.isAttacking && this.attackingWith != null) {
@@ -95,6 +103,42 @@ var FighterEntity = Entity.extend({
             this.attackingWith.causesTouchDamage = false;
             this.attackingWith.receivesCollision = false;
             this.attackingWith.affectedByGravity = false;
+        }
+
+        if (Net.isHost && this.shouldDie()) {
+            this.die();
+        }
+    },
+
+    shouldDie: function () {
+        return this.posY >= Game.stage.height;
+    },
+
+    die: function () {
+        if (this.dead) {
+            return;
+        }
+
+        this.dead = true;
+        AudioOut.playSfx('death.wav');
+
+        this.causesCollision = false;
+        this.receivesCollision = false;
+
+        if (Net.isHost) {
+            var payload = {
+                op: Opcode.DEATH,
+                playerNumber: this.playerNumber
+            };
+
+            Net.broadcastMessage(payload);
+        }
+
+        Log.writeMessage('Player ' + this.playerNumber + ' died!!');
+
+        if (this.isLocalPlayer()) {
+            Camera.centerToMap();
+            $('#uded').show();
         }
     }
 });

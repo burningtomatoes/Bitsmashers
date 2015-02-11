@@ -6,6 +6,10 @@ var PlayerControls = {
 
         var p = Game.stage.player;
 
+        if (p.dead) {
+            return;
+        }
+
         // MOVE //////////////////////////////////////////////////////////////////////////////////////////////////////
         var keyMoveUp       = Keyboard.wasKeyPressed(KeyCode.W) || Keyboard.wasKeyPressed(KeyCode.UP);
         var keyMoveLeft     = Keyboard.isKeyDown(KeyCode.A) || Keyboard.isKeyDown(KeyCode.LEFT);

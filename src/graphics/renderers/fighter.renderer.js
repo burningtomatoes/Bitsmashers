@@ -61,6 +61,10 @@ var FighterRenderer = Renderer.extend({
     indicatorTimer: 0,
 
     draw: function (ctx) {
+        if (this.entity.dead) {
+            return;
+        }
+
         var showIndicator = !this.entity.isMoving() && !this.entity.isAttacking;
 
         if (!showIndicator && Game.stage.unlocked) {

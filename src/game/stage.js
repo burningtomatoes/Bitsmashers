@@ -36,7 +36,7 @@ var Stage = Class.extend({
         }
 
         this.unlocked = false;
-        this.unlockTimer = 60;
+        this.unlockTimer = 120;
     },
 
     add: function (entity) {

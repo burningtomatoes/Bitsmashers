@@ -178,8 +178,18 @@ canvas {
   }
 }
 
-#go {
+#go, #uded {
   text-align: center;
   padding: 20px;
   font-size: 36px;
+}
+
+#log {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 25px;
+  font-size: 24px;
+  text-align: center;
+  text-shadow: 1px 1px 1px #000, -1px -1px 1px #000;
 }
