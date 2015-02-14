@@ -2,6 +2,27 @@ Bitsmashers
 =======
 *An epic 8-bit fighting game full of pixelated awesomeness*
 
+How to play
+---
+The Goal: Join other players online. Throw other players off the map and be the last person standing.
+
+- Use A/S or Left/Right to move
+- Use W or Up to jump, press again to double jump in mid-air
+- Press SPACE to pick up blocks or other players
+- Press SPACE to throw blocks and players against other players
+
+Some tips:
+- Throwing players off the map is the easiest way to win, but it's tricky
+- When another players is carrying a block, jump on top of it to steal it away
+
+WebRTC Multiplayer
+---
+This game was an online multiplayer expiriment, utilizing WebRTC data channels for realtime communication with peers. The matchmaking server is a signaling channel that communicates offers, answers, and ICE candidiates.
+
+When you join a game, you broadcast an offer over the signaling server every few seconds. Any hosts will listen for these offers, and send answers if they have available slots. When the answer is accepted by the joining party, an exchange of ICE candidates begins, and a connection is set up.
+
+Unfortunately the actual WebRTC data channel does not always work correctly, in particular things go wrong when the browser window loses focus. Because the WebRTC spec and implementation is ever-changing, there is a very good chance this game will stop working altogether at some point as new browser versions are released.
+
 About the challenge
 ---
 I built this game as part of my "build one game a week" challenge: one game per week, every week, even if it's crap (release often, fail often, and learn). I'm hoping to get better at game development during this process by pushing myself to deliver something every week and learning from previous weeks. Hopefully by releasing the source code to each game, my journey can be useful to you too.
