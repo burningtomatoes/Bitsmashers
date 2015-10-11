@@ -167,6 +167,17 @@ var Entity = Class.extend({
         this.posX += this.velocityX;
         this.posY += this.velocityY;
 
+        // If something is way out of range, kill it
+        if (!this.dead && this.posX <= -this.map.width || this.posX >= this.map.width * 2 ||
+            this.posY >= this.map.width * 2 || this.posY <= -this.map.height) {
+            if (this.die) {
+                this.die();
+            } else {
+                this.map.remove(this);
+            }
+            return;
+        }
+
         if (this.velocityX != 0) {
             this.direction = this.velocityX < 0 ? Direction.LEFT : Direction.RIGHT;
         }
@@ -204,21 +215,32 @@ var Entity = Class.extend({
         }
 
         if (Settings.DebugCollision) {
-            var sq = this.rect();
+            // Draw right collide rect
+            var r = this.rectCollideRight();
+            ctx.rect(Camera.translateX(r.left), Camera.translateY(r.top), r.width, r.height);
+            ctx.beginPath();
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = 'blue';
+            ctx.stroke();
+            ctx.closePath();
 
+            // Draw pos rect
+            var sq = this.rect();
             ctx.beginPath();
             ctx.rect(Camera.translateX(sq.left), Camera.translateY(sq.top), sq.width, sq.height);
             ctx.lineWidth = 1;
             ctx.strokeStyle = 'red';
             ctx.stroke();
+            ctx.closePath();
 
+            // Draw attack radius rect
             var sq = this.attackRect();
-
             ctx.beginPath();
             ctx.rect(Camera.translateX(sq.left), Camera.translateY(sq.top), sq.width, sq.height);
             ctx.lineWidth = 1;
             ctx.strokeStyle = 'purple';
             ctx.stroke();
+            ctx.closePath();
         }
     },
 
@@ -260,6 +282,17 @@ var Entity = Class.extend({
         var projectedPosY = this.posY + this.movementSpeed;
         var projectedRect = this.projectRect(null, projectedPosY);
         return !Game.stage.anyCollisions(this, projectedRect, this.attackingWith);
+    },
+
+    rectCollideRight: function () {
+        var r = { };
+        r.width = this.width;
+        r.height = this.height;
+        r.left = this.x;
+        r.top = this.y;
+        r.right = r.left + r.width;
+        r.bottom = r.top + r.height;
+        return r;
     },
 
     canMoveAnywhere: function () {
