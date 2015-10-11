@@ -191,5 +191,7 @@ var FighterEntity = Entity.extend({
             this.isAttacking = false;
             this.attackingWith = null;
         }
+
+        this.map.remove(this);
     }
 });
