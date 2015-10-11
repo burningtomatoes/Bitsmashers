@@ -42,12 +42,8 @@ img {
 }
 
 /** Canvas config **/
-$width: 640px;
-$height: 400px;
-
-$scale: 2;
-$scaleWidth: $width * $scale;
-$scaleHeight: $height * $scale;
+$width: 100%;
+$height: 100%;
 
 canvas {
   /** We want nearest neighbor stretching (pixelated) for all canvas elements **/
@@ -61,13 +57,13 @@ canvas {
 
 .content {
   position: fixed;
-  width: $scaleWidth;
-  height: $scaleHeight;
-  top: 50%;
-  left: 50%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 100;
-  margin-top: -($scaleHeight / 2);
-  margin-left: -($scaleWidth / 2);
 }
 .hud {
   z-index: 200;
