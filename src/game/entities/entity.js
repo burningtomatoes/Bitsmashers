@@ -295,14 +295,6 @@ var Entity = Class.extend({
         return r;
     },
 
-    canMoveAnywhere: function () {
-        if (!this.receivesCollision) {
-            return true;
-        }
-
-        return (this.canMoveLeft() || this.canMoveDown() || this.canMoveUp() || this.canMoveRight());
-    },
-
     willCollideLeft: function () {
         if (!this.receivesCollision) {
             return false;

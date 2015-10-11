@@ -124,6 +124,21 @@ var FighterEntity = Entity.extend({
             this.attackingWith.affectedByGravity = false;
         }
 
+        // Smash blocks when jumping up if velocity is high enough
+        if (this.velocityY < -7.5) {
+            var projectedPos = this.projectRect(this.posX + this.velocityX, this.posY + (this.velocityY * 2));
+            var projectedIntersects = this.map.checkCollisions(this, projectedPos);
+
+            if (projectedIntersects.length > 0) {
+                var block = projectedIntersects[0];
+
+                if (block.isBlock) {
+                    block.smash();
+                    this.velocityY = 0;
+                }
+            }
+        }
+
         if (Net.isHost && this.shouldDie()) {
             this.die();
         }
