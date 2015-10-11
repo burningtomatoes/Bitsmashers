@@ -53,6 +53,7 @@ var MainMenu = {
         switch (this.currentOption) {
             case MainMenuOption.CANCEL:
                 if (!this.secondaryMode) {
+                    this.forceOptionChange = true;
                     break;
                 }
 
@@ -62,6 +63,7 @@ var MainMenu = {
 
             case MainMenuOption.START_GAME:
                 if (!this.secondaryMode || !Net.isHost) {
+                    this.forceOptionChange = true;
                     break;
                 }
 
@@ -70,6 +72,7 @@ var MainMenu = {
 
             case MainMenuOption.HOST_GAME:
                 if (this.secondaryMode) {
+                    this.forceOptionChange = true;
                     break;
                 }
 
@@ -78,6 +81,7 @@ var MainMenu = {
 
             case MainMenuOption.JOIN_GAME:
                 if (this.secondaryMode) {
+                    this.forceOptionChange = true;
                     break;
                 }
 
@@ -86,14 +90,18 @@ var MainMenu = {
         }
     },
 
+    forceOptionChange: false,
+
     update: function () {
         if (Game.inGame) {
             return;
         }
 
         var keyUp = Keyboard.wasKeyPressed(KeyCode.W) || Keyboard.wasKeyPressed(KeyCode.UP);
-        var keyDown = Keyboard.wasKeyPressed(KeyCode.S) || Keyboard.wasKeyPressed(KeyCode.DOWN);
+        var keyDown = Keyboard.wasKeyPressed(KeyCode.S) || Keyboard.wasKeyPressed(KeyCode.DOWN) || this.forceOptionChange;
         var keySubmit = Keyboard.wasKeyPressed(KeyCode.SPACE) || Keyboard.wasKeyPressed(KeyCode.RETURN) || Keyboard.wasKeyPressed(KeyCode.ENTER);
+
+        this.forceOptionChange = false;
 
         var optionChange = 0;
 
