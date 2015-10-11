@@ -3,6 +3,7 @@ var Settings = {
 
     DebugCollision: true,
     DebugSkipBootLogo: true,
+    DebugQuickStart: true,
 
     MatchmakingUri: 'http://burningtomato.com:2013'
 };

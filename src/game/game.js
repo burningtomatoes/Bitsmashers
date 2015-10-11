@@ -24,6 +24,13 @@ var Game = {
     start: function () {
         console.info('[Game] Starting game...');
 
+        if (Settings.DebugQuickStart) {
+            Net.hostGame();
+            Lobby.startGame();
+            //this.loadStage('green');
+            return;
+        }
+
         Canvas.$canvas.hide();
 
         BootLogo.show(function() {
