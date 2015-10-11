@@ -83,15 +83,6 @@ var MainMenu = {
 
                 Net.joinGame();
                 break;
-
-            case MainMenuOption.SINGLE_PLAYER:
-                if (this.secondaryMode) {
-                    break;
-                }
-
-                this.$options.find('.opt.o4').text('Yeah, had no time for that. Sorry.');
-                AudioOut.playSfx('too_bad.wav');
-                break;
         }
     },
 
