@@ -76,6 +76,14 @@ var Game = {
         }
 
         Camera.update();
+
+        if (Settings.DebugCollision) {
+            if (this.stage != null) {
+                $('#debug').text('Entity count: ' + this.stage.entities.length);
+            } else {
+                $('#debug').text('No stage loaded');
+            }
+        }
     },
 
     update: function () {
