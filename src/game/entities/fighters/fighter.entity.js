@@ -135,6 +135,7 @@ var FighterEntity = Entity.extend({
         this.attackingWith.receivesCollision = true;
         this.attackingWith.affectedByGravity = true;
         this.attackingWith.velocityX = this.direction == Direction.LEFT ? -32 : 32;
+        this.attackingWith.velocityY += 5;
 
         this.attackingWith = null;
         this.isAttacking = false;

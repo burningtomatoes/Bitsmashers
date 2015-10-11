@@ -73,20 +73,17 @@ var Entity = Class.extend({
             var projectedPos = this.projectRect(this.posX + this.velocityX, this.posY + this.velocityY);
             var projectedIntersects = this.map.checkCollisions(this, projectedPos);
 
+            console.log('p!', this.velocityX, this.velocityY);
+
             this.velocityX *= 0.99;
 
-            if (Math.abs(this.velocityX) <= 0.1) {
-                if (this.isPlayer) {
-                    this.isProjectile = false;
-                    this.affectedByGravity = true;
-                    this.causesCollision = true;
-                    this.receivesCollision = true;
-                } else {
-                    AudioOut.playSfx('impact.wav', 0.2);
-                    this.map.remove(this);
-                }
-            }
-            else if (projectedIntersects.length > 0) {
+            if (Math.abs(this.velocityX) <= 0.1 && this.isPlayer) {
+                // If a player was thrown, un-projectile them if they have slowed down
+                this.isProjectile = false;
+                this.affectedByGravity = true;
+                this.causesCollision = true;
+                this.receivesCollision = true;
+            } else if (projectedIntersects.length > 0) {
                 // Do we still have enough juice in us to defeat other entities?
                 var willSelfShatter = Math.abs(this.velocityX) < 5;
                 var intersectWith = projectedIntersects[0];
@@ -97,6 +94,7 @@ var Entity = Class.extend({
 
                 if (intersectWith.isBlock) {
                     if (!willSelfShatter) {
+                        console.log('shattering impact block, but not ourselves');
                         AudioOut.playSfx('impact.wav', 0.5);
                         this.map.remove(intersectWith);
                     }
@@ -117,10 +115,39 @@ var Entity = Class.extend({
                     intersectWith.isProjectile = true;
                 }
 
-                if (willSelfShatter) {
+                if (willSelfShatter && !this.isPlayer) {
+                    console.log('self-shattering');
                     AudioOut.playSfx('impact.wav', 0.5);
                     this.map.remove(this);
+                    return;
                 }
+            }
+
+            // If the projectile is still moving in the X velocity, but stopped in the Y, slow it down until it stops
+            // When it stops, allow it to be picked up again.
+            // This prevents the silly "sideways sliding block" effect
+            if (Math.abs(this.velocityY) <= 0.1 && this.velocityX != 0 && this.isBlock) {
+                console.log('SLIDING BLOCK DETECTED M8');
+                this.velocityX = MathHelper.lerp(this.velocityY, 0, 0.1);
+
+                if (Math.abs(this.velocityX) <= 0.1) {
+                    this.velocityX = 0;
+                    this.isProjectile = false;
+                    this.affectedByGravity = true;
+                    this.causesCollision = true;
+                    this.receivesCollision = true;
+                }
+            }
+
+            // Any projectile that is barely moving should be pick-upable again
+            if (Math.abs(this.velocityX) <= 0.1 && Math.abs(this.velocityY) <= 0.1) {
+                console.log('reviving dead projectile to interactable block');
+                this.velocityX = 0;
+                this.velocityY = 0;
+                this.isProjectile = false;
+                this.affectedByGravity = true;
+                this.causesCollision = true;
+                this.receivesCollision = true;
             }
         }
 
