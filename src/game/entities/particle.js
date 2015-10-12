@@ -2,12 +2,13 @@ var ParticleEntity = Entity.extend({
     receivesDamage: false,
     causesTouchDamage: false,
     causesCollision: false,
-    receivesCollision: false,
+    receivesCollision: true,
     affectedByGravity: false,
 
     color: '#fffff',
     life: 0,
     lifeMax: 0,
+    explosion: false,
 
     init: function (x, y, h, w, l, color) {
         this.posX = x;
@@ -29,6 +30,12 @@ var ParticleEntity = Entity.extend({
 
         this.posX += this.velocityX;
         this.posY += this.velocityY;
+
+        if (!this.explosion) {
+            if (this.canMoveDown()) {
+                this.velocityY += this.map.gravity;
+            }
+        }
     },
 
     draw: function (ctx) {

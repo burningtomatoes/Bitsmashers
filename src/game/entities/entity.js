@@ -95,8 +95,7 @@ var Entity = Class.extend({
                 if (intersectWith.isBlock) {
                     if (!willSelfShatter) {
                         console.log('shattering both on impact');
-                        AudioOut.playSfx('impact.wav', 0.5);
-                        this.map.remove(intersectWith);
+                        intersectWith.smash();
                         willSelfShatter = true;
                     }
                 } else if (intersectWith.isPlayer) {
@@ -117,9 +116,7 @@ var Entity = Class.extend({
                 }
 
                 if (willSelfShatter && !this.isPlayer) {
-                    console.log('self-shattering');
-                    AudioOut.playSfx('impact.wav', 0.5);
-                    this.map.remove(this);
+                    this.smash();
                     return;
                 }
             }
