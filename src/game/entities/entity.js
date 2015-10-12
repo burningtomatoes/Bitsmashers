@@ -94,9 +94,10 @@ var Entity = Class.extend({
 
                 if (intersectWith.isBlock) {
                     if (!willSelfShatter) {
-                        console.log('shattering impact block, but not ourselves');
+                        console.log('shattering both on impact');
                         AudioOut.playSfx('impact.wav', 0.5);
                         this.map.remove(intersectWith);
+                        willSelfShatter = true;
                     }
                 } else if (intersectWith.isPlayer) {
                     console.log('I hit a player!!!!');
