@@ -73,8 +73,6 @@ var Entity = Class.extend({
             var projectedPos = this.projectRect(this.posX + this.velocityX, this.posY + this.velocityY);
             var projectedIntersects = this.map.checkCollisions(this, projectedPos);
 
-            console.log('p!', this.velocityX, this.velocityY);
-
             this.velocityX *= 0.99;
 
             if (Math.abs(this.velocityX) <= 0.1 && this.isPlayer) {
@@ -94,25 +92,12 @@ var Entity = Class.extend({
 
                 if (intersectWith.isBlock) {
                     if (!willSelfShatter) {
-                        console.log('shattering both on impact');
                         intersectWith.smash();
                         willSelfShatter = true;
                     }
                 } else if (intersectWith.isPlayer) {
-                    console.log('I hit a player!!!!');
-                    AudioOut.playSfx('pain.wav', 0.5);
                     var throwbackPower = willSelfShatter ? 16 : 32;
-
-                    if (this.velocityX < 0) {
-                        // Coming in from the right
-                        throwbackPower = -throwbackPower;
-                    }
-
-                    intersectWith.velocityX += throwbackPower;
-                    intersectWith.affectedByGravity = true;
-                    intersectWith.causesCollision = false;
-                    intersectWith.receivesCollision = false;
-                    intersectWith.isProjectile = true;
+                    intersectWith.pain(this, throwbackPower);
                 }
 
                 if (willSelfShatter && !this.isPlayer) {
@@ -125,7 +110,6 @@ var Entity = Class.extend({
             // When it stops, allow it to be picked up again.
             // This prevents the silly "sideways sliding block" effect
             if (Math.abs(this.velocityY) <= 0.1 && this.velocityX != 0 && this.isBlock) {
-                console.log('SLIDING BLOCK DETECTED M8');
                 this.velocityX = MathHelper.lerp(this.velocityY, 0, 0.1);
 
                 if (Math.abs(this.velocityX) <= 0.1) {
@@ -139,7 +123,6 @@ var Entity = Class.extend({
 
             // Any projectile that is barely moving should be pick-upable again
             if (Math.abs(this.velocityX) <= 0.1 && Math.abs(this.velocityY) <= 0.1) {
-                console.log('reviving dead projectile to interactable block');
                 this.velocityX = 0;
                 this.velocityY = 0;
                 this.isProjectile = false;

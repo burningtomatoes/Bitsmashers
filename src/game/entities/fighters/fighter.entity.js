@@ -170,6 +170,40 @@ var FighterEntity = Entity.extend({
         }
     },
 
+    pain: function (source, throwbackPower) {
+        AudioOut.playSfx('pain.wav', 0.5);
+
+        if (this.isLocalPlayer()) {
+            Camera.rumble(10, 2);
+        } else {
+            Camera.rumble(10, 1);
+        }
+
+        Particles.emit({
+            x: this.posX + (this.width / 2),
+            y: this.posY + (this.height / 2),
+            color: '#ff0000',
+            min: 25,
+            max: 50
+        });
+
+        if (throwbackPower != 0) {
+            // Apply throwback
+            if (source.velocityX < 0) {
+                // Coming in from the right
+                throwbackPower = -throwbackPower;
+            }
+
+            this.velocityX += throwbackPower;
+
+            // Turn ourselves into a projectile
+            this.affectedByGravity = true;
+            this.causesCollision = false;
+            this.receivesCollision = false;
+            this.isProjectile = true;
+        }
+    },
+
     shouldDie: function () {
         return this.posY >= Game.stage.height;
     },
