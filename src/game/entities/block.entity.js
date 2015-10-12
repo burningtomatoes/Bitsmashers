@@ -19,6 +19,7 @@ var BlockEntity = Entity.extend({
         });
 
         AudioOut.playSfx('impact.wav', 0.5);
+        Camera.rumble(10, 1);
         this.map.remove(this);
     }
 });
