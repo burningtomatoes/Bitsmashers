@@ -134,6 +134,7 @@ var FighterEntity = Entity.extend({
 
                 if (block.isBlock && block != this.attackingWith) {
                     block.smash();
+                    Camera.rumble(10, 1);
                     this.velocityY = 0;
                 }
             }
