@@ -1,7 +1,7 @@
 var Settings = {
     TileSize: 32,
 
-    DebugCollision: false,
+    DebugCollision: true,
     DebugSkipBootLogo: true,
     DebugQuickStart: true,
 

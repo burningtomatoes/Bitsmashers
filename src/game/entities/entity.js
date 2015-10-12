@@ -16,6 +16,8 @@ var Entity = Class.extend({
     posX: 0,
     posY: 0,
 
+    offsetX: 0,
+    offsetY: 0,
     height: 0,
     width: 0,
 
@@ -198,13 +200,15 @@ var Entity = Class.extend({
 
         if (Settings.DebugCollision) {
             // Draw right collide rect
-            var r = this.rectCollideRight();
-            ctx.rect(Camera.translateX(r.left), Camera.translateY(r.top), r.width, r.height);
-            ctx.beginPath();
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = 'blue';
-            ctx.stroke();
-            ctx.closePath();
+            if (this.isPlayer) {
+                var r = this.rectCollideRight();
+                ctx.rect(Camera.translateX(r.left), Camera.translateY(r.top), r.width, r.height);
+                ctx.beginPath();
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = 'blue';
+                ctx.stroke();
+                ctx.closePath();
+            }
 
             // Draw pos rect
             var sq = this.rect();
@@ -216,13 +220,15 @@ var Entity = Class.extend({
             ctx.closePath();
 
             // Draw attack radius rect
-            var sq = this.attackRect();
-            ctx.beginPath();
-            ctx.rect(Camera.translateX(sq.left), Camera.translateY(sq.top), sq.width, sq.height);
-            ctx.lineWidth = 1;
-            ctx.strokeStyle = 'purple';
-            ctx.stroke();
-            ctx.closePath();
+            if (!this.isBlock) {
+                var sq = this.attackRect();
+                ctx.beginPath();
+                ctx.rect(Camera.translateX(sq.left), Camera.translateY(sq.top), sq.width, sq.height);
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = 'purple';
+                ctx.stroke();
+                ctx.closePath();
+            }
         }
     },
 
@@ -349,8 +355,8 @@ var Entity = Class.extend({
         var r = { };
         r.width = this.width;
         r.height = this.height;
-        r.left = x;
-        r.top = y;
+        r.left = x + this.offsetX;
+        r.top = y + this.offsetY;
         r.right = r.left + r.width;
         r.bottom = r.top + r.height;
         return r;
