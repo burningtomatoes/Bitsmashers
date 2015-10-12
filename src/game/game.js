@@ -27,6 +27,8 @@ var Game = {
         if (Settings.DebugQuickStart) {
             Net.hostGame();
             Lobby.onUserConnected(null);
+            Lobby.onUserConnected(null);
+            Lobby.onUserConnected(null);
             Lobby.startGame();
             //this.loadStage('green');
             return;
