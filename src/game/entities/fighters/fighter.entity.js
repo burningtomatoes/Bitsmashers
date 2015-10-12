@@ -132,7 +132,7 @@ var FighterEntity = Entity.extend({
             if (projectedIntersects.length > 0) {
                 var block = projectedIntersects[0];
 
-                if (block.isBlock) {
+                if (block.isBlock && block != this.attackingWith) {
                     block.smash();
                     this.velocityY = 0;
                 }
