@@ -24,6 +24,11 @@ var PlayerControls = {
                 p.velocityY = -p.jumpPower;
             }
 
+            Particles.emit({
+                x: p.posX,
+                y: p.posY
+            });
+
             p.landed = false;
 
             if (p.jumped) {
