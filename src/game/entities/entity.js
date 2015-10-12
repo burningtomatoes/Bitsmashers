@@ -34,6 +34,7 @@ var Entity = Class.extend({
     renderer: null,
 
     isProjectile: false,
+    thrownBy: null,
 
     init: function () {
         this.posX = 0;
