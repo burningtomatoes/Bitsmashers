@@ -18,6 +18,8 @@ var Stage = Class.extend({
     unlocked: false,
     unlockTimer: 0,
 
+    loaded: false,
+
     idGen: 0,
 
     init: function () {
@@ -188,20 +190,50 @@ var Stage = Class.extend({
                 entity.update();
             }
         }
+    },
 
-        // Countdown to GO
-        if (Net.isHost && !this.unlocked)
-        {
-            if (this.unlockTimer > 0) {
-                this.unlockTimer--;
+    getPlayerEntities: function () {
+        var arr = [];
 
-                if (this.unlockTimer <= 0) {
-                    var mGo = { op: Opcode.GO };
+        for (var i = 0; i < this.entities.length; i++) {
+            var e = this.entities[i];
 
-                    Net.broadcastMessage(mGo);
-                    Router.processData(mGo);
-                }
+            if (e.isPlayer) {
+                arr.push(e);
             }
+        }
+
+        return arr;
+    },
+
+    getLivePlayerCount: function () {
+        var players = this.getPlayerEntities();
+        var count = 0;
+
+        for (var i = 0; i < players.length; i++) {
+            var p = players[i];
+
+            if (p.dead) {
+                continue;
+            }
+
+            count++;
+        }
+
+        return count;
+    },
+
+    getLastManStanding: function () {
+        var players = this.getPlayerEntities();
+
+        for (var i = 0; i < players.length; i++) {
+            var p = players[i];
+
+            if (p.dead) {
+                continue;
+            }
+
+            return p;
         }
     },
 

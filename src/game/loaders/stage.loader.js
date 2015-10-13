@@ -128,6 +128,9 @@ var StageLoader = Loader.extend({
                 } // end layer data for
             } // end layers for
 
+            stage.loaded = true;
+            stage.unlocked = false;
+
             cb();
         };
     }

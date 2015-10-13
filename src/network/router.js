@@ -46,10 +46,19 @@ var Router = {
                 break;
             case Opcode.GO:
                 Log.clear();
-                $('#go').show().delay(1000).fadeOut('slow');
+                $('#go').show().text('Go!').delay(1000).fadeOut('slow');
                 Game.stage.unlocked = true;
                 Camera.followEntity(Game.stage.player);
                 AudioOut.playSfx('startshot.wav', 0.25);
+                $('#scoreboard').hide();
+                break;
+            case Opcode.ROUND_FINISH:
+                Game.stage.unlocked = false;
+                Camera.followEntity(Game.stage.player);
+                $('#go').show().text('End of round').delay(1000);
+                $('#uded').hide();
+                $('#game').delay(500).fadeOut(2500);
+                $('#scoreboard').show();
                 break;
             case Opcode.DEATH:
                 if (Net.isHost) {

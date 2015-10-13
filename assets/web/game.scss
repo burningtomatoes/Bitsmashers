@@ -177,7 +177,7 @@ canvas {
 #go, #uded {
   text-align: center;
   padding: 20px;
-  font-size: 36px;
+  font-size: 48px;
 }
 
 #debug {
@@ -202,4 +202,35 @@ canvas {
   font-size: 24px;
   text-align: center;
   text-shadow: 1px 1px 1px #000, -1px -1px 1px #000;
+}
+
+#scoreboard {
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  position: relative;
+  width: 750px;
+  top: 200px;
+  z-index: 99999999;
+  font-size: 21px;
+  margin: 0 auto;
+  display: none;
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    td, th {
+      text-align: left;
+      padding-left: 15px;
+    }
+    th {
+      font-weight: bold;
+    }
+    tr {
+      height: 50px;
+    }
+    tbody tr {
+      background: rgba(0, 0, 0, 0.5);
+      border-top: 10px solid rgba(0, 0, 0, 0.5);
+    }
+  }
 }

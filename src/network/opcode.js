@@ -6,5 +6,7 @@ var Opcode = {
     PLAYER_UPDATE: 4,
     GO: 5,
     DEATH: 6,
-    THROW: 7
+    THROW: 7,
+    ROUND_FINISH: 8,
+    GAME_FINISH: 9
 };

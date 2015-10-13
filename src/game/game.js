@@ -46,7 +46,9 @@ var Game = {
     loadStage: function (id) {
         $('#mainmenu').fadeOut();
         $('#game').fadeIn();
-        $('#uded').hide();
+        $('#uded').stop().fadeOut('fast');
+        $('#go').stop().fadeOut('fast');
+        $('#scoreboard').hide();
 
         var stage = this.stages.load(id);
         stage.onLoaded = function () {
@@ -98,6 +100,7 @@ var Game = {
 
     update: function () {
         if (this.stage) {
+            Rounds.update();
             this.stage.update();
             PlayerControls.update();
         }
