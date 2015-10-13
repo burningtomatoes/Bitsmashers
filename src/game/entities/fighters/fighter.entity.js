@@ -203,6 +203,8 @@ var FighterEntity = Entity.extend({
             this.receivesCollision = false;
             this.isProjectile = true;
         }
+
+        this.damageFlash = 4;
     },
 
     shouldDie: function () {

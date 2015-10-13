@@ -3,10 +3,13 @@ var FighterRenderer = Renderer.extend({
     spriteWalk: null,
     spriteAttack: null,
     spriteJump: null,
+    spriteHurt: null,
 
     animIdle: null,
     animAttack: null,
     animJump: null,
+
+    flashHurt: false,
 
     init: function (entity) {
         this._super(entity);
@@ -20,6 +23,15 @@ var FighterRenderer = Renderer.extend({
         this.animWalk = new Animation(this.spriteWalk, entity.width, entity.height, 10, 3, true);
         this.animAttack = new Animation(this.spriteAttack, entity.width, entity.height, 10, 3, true);
         this.animJump = new Animation(this.spriteJump, entity.width, entity.height, 10, 3, true);
+
+        this.generateHurtSprite();
+    },
+
+    generateHurtSprite: function() {
+        // Use first frame of the attack animation (so they look to be in an "eek!" pose)
+        FillSprite.make(this.spriteAttack, 0, 0, this.entity.width, this.entity.height, [255, 255, 255], function (resultImg) {
+            this.spriteHurt = resultImg;
+        }.bind(this));
     },
 
     update: function () {
@@ -91,7 +103,11 @@ var FighterRenderer = Renderer.extend({
             ctx.translate(Camera.translateX(this.entity.posX), Camera.translateY(this.entity.posY));
         }
 
-        this.selectAnimation().draw(ctx, 0, 0);
+        if (this.flashHurt && this.spriteHurt != null) {
+            ctx.drawImage(this.spriteHurt, 0, 0, this.entity.width, this.entity.height);
+        } else {
+            this.selectAnimation().draw(ctx, 0, 0);
+        }
 
         if (showIndicator) {
             ctx.beginPath();

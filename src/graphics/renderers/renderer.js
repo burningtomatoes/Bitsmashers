@@ -19,5 +19,9 @@ var Renderer = Class.extend({
 
     draw: function (ctx) {
         // To be implemented by children
+    },
+
+    drawPain: function (ctx) {
+        return this.draw(ctx);
     }
 });

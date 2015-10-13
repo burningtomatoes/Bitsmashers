@@ -38,6 +38,8 @@ var Entity = Class.extend({
     isProjectile: false,
     thrownBy: null,
 
+    damageFlash: 0,
+
     init: function () {
         this.posX = 0;
         this.posY = 0;
@@ -72,6 +74,10 @@ var Entity = Class.extend({
     },
 
     update: function () {
+        if (this.damageFlash > 0) {
+            this.damageFlash--;
+        }
+
         if (this.isProjectile) {
             var projectedPos = this.projectRect(this.posX + this.velocityX, this.posY + this.velocityY);
             var projectedIntersects = this.map.checkCollisions(this, projectedPos);
@@ -97,6 +103,7 @@ var Entity = Class.extend({
                     if (!willSelfShatter) {
                         intersectWith.smash();
                         willSelfShatter = true;
+                        this.damageFlash = 4;
                     }
                 } else if (intersectWith.isPlayer) {
                     var throwbackPower = willSelfShatter ? 16 : 32;
@@ -195,6 +202,7 @@ var Entity = Class.extend({
 
     draw: function (ctx) {
         if (this.renderer != null) {
+            this.renderer.flashHurt = this.damageFlash > 0;
             this.renderer.draw(ctx);
         }
 
