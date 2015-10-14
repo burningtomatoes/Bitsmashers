@@ -217,7 +217,7 @@ var FighterEntity = Entity.extend({
         return this.posY >= Game.stage.height;
     },
 
-    die: function () {
+    die: function (viaSync) {
         if (this.dead) {
             return;
         }
@@ -228,13 +228,16 @@ var FighterEntity = Entity.extend({
         this.causesCollision = false;
         this.receivesCollision = false;
 
-        if (Net.isHost) {
-            var payload = {
-                op: Opcode.DEATH,
-                playerNumber: this.playerNumber
-            };
+        if (!viaSync) {
+            if (Net.isHost || this.isLocalPlayer()) {
+                var payload = {
+                    op: Opcode.DEATH,
+                    playerNumber: this.playerNumber,
+                    b: Net.isHost
+                };
 
-            Net.broadcastMessage(payload);
+                Net.broadcastMessage(payload);
+            }
         }
 
         Log.writeMessage('Player ' + this.playerNumber + ' died!!');

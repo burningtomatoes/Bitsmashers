@@ -61,13 +61,17 @@ var Router = {
                 $('#scoreboard').show();
                 break;
             case Opcode.DEATH:
-                if (Net.isHost) {
-                    return;
-                }
-
                 var pNo = data.playerNumber;
                 var entity = Game.stage.getPlayerByNumber(pNo);
-                entity.die();
+                entity.die(true);
+
+                if (Net.isHost && !data.b) {
+                    // This was a message sent by a client themselves, and was not broadcast by the host
+                    // Rebroadcast it to all clients
+                    data.b = true;
+                    Net.broadcastMessage(data);
+                }
+
                 break;
             case Opcode.BLOCK_SMASH:
                 if (Net.isHost) {
