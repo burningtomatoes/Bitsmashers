@@ -1,9 +1,9 @@
 var Settings = {
     TileSize: 32,
 
-    DebugCollision: true,
+    DebugCollision: false,
     DebugSkipBootLogo: true,
-    DebugQuickStart: true,
+    DebugQuickStart: false,
 
     MatchmakingUri: 'http://burningtomato.com:2013'
 };

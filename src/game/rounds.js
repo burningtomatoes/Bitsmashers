@@ -44,8 +44,11 @@ var Rounds = {
 
         if (this.state == RoundState.IDLE) {
             // Just freshly initialized, begin init
-            this.beginRoundCountdown();
-            console.info('[Rounds] Beginning countdown to first round.');
+            if (Game.stage != null && Game.stage.loaded) {
+                this.beginRoundCountdown();
+                console.info('[Rounds] Beginning countdown to first round.');
+            }
+
             return;
         }
 
