@@ -8,5 +8,6 @@ var Opcode = {
     DEATH: 6,
     THROW: 7,
     ROUND_FINISH: 8,
-    GAME_FINISH: 9
+    GAME_FINISH: 9,
+    BLOCK_SMASH: 10
 };

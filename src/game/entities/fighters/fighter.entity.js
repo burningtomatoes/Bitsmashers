@@ -145,6 +145,10 @@ var FighterEntity = Entity.extend({
     },
 
     doThrow: function () {
+        if (this.attackingWith == null) {
+            return;
+        }
+
         this.attackingWith.isProjectile = true;
         this.attackingWith.thrownBy = this;
         this.attackingWith.causesCollision = false;

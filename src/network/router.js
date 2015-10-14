@@ -69,6 +69,20 @@ var Router = {
                 var entity = Game.stage.getPlayerByNumber(pNo);
                 entity.die();
                 break;
+            case Opcode.BLOCK_SMASH:
+                if (Net.isHost) {
+                    // Rebroadcast to clients
+                    Net.broadcastMessage(data);
+                }
+
+                // Smash block locally
+                var b = Game.stage.getEntityById(data.i);
+
+                if (b != null && b.isBlock) {
+                    b.smash(true);
+                }
+
+                break;
             default:
                 console.warn('[Net:Router] Unable to route message, unknown op', op);
                 break;
