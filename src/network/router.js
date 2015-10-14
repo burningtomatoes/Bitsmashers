@@ -42,7 +42,7 @@ var Router = {
                 }
 
                 var e = Game.stage.getPlayerByNumber(data.p);
-                e.doThrow();
+                e.doThrow(true);
                 break;
             case Opcode.GO:
                 Log.clear();

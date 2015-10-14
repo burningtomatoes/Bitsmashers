@@ -144,7 +144,7 @@ var FighterEntity = Entity.extend({
         }
     },
 
-    doThrow: function () {
+    doThrow: function (viaSync) {
         if (this.attackingWith == null) {
             return;
         }
@@ -163,15 +163,17 @@ var FighterEntity = Entity.extend({
         this.landed = true;
         this.jumped = false;
 
-        var netPayload = {
-            op: Opcode.THROW,
-            p: this.playerNumber
-        };
+        if (!viaSync) {
+            var netPayload = {
+                op: Opcode.THROW,
+                p: this.playerNumber
+            };
 
-        if (Net.isHost) {
-            Net.broadcastMessage(netPayload);
-        } else {
-            Net.getConnection().sendMessage(netPayload);
+            if (Net.isHost) {
+                Net.broadcastMessage(netPayload);
+            } else {
+                Net.getConnection().sendMessage(netPayload);
+            }
         }
     },
 
