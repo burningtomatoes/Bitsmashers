@@ -45,19 +45,27 @@ var Game = {
 
     loadStage: function (id) {
         $('#mainmenu').fadeOut();
-        $('#game').fadeIn();
+        $('#game').hide();
         $('#uded').stop().fadeOut('fast');
         $('#go').stop().fadeOut('fast');
         $('#scoreboard').hide();
 
+        Game.stage = null;
+
         var stage = this.stages.load(id);
-        stage.onLoaded = function () {
+        stage.onLoaded = function (stage) {
             Game.stage = stage;
             Game.inGame = true;
 
             Camera.centerToMap();
 
+            console.info('[Game] Stage has loaded. Revealing canvas.');
+
+            $('#game').fadeIn('fast');
+
             if (Net.isHost) {
+                console.info('[Game] User is host. Spawning players on map and sending sync.');
+
                 for (var i = 0; i < Lobby.players.length; i++) {
                     var player = Lobby.players[i];
 
@@ -99,8 +107,9 @@ var Game = {
     },
 
     update: function () {
+        Rounds.update();
+        
         if (this.stage) {
-            Rounds.update();
             this.stage.update();
             PlayerControls.update();
         }

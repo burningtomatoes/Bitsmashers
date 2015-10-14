@@ -1,13 +1,10 @@
 var StageLoader = Loader.extend({
-    readCache: function (id, defaultValue) {
-        var data = this._super(id, defaultValue);
+    contains: function () {
+        return false;
+    },
 
-        if (data.isStage) {
-            // Clear stages before returning them from cache
-            data.clear();
-            data.onLoaded();
-        }
-        return data;
+    readCache: function (id, defaultValue) {
+        return null;
     },
 
     innerLoad: function (mapId) {
@@ -15,16 +12,21 @@ var StageLoader = Loader.extend({
 
         var stage = new Stage();
         stage.id = mapId;
-        stage.onLoaded = function () { console.error('[MapLoader] Callback missed'); };
+        stage.onLoaded = function () {
+            console.error('[MapLoader] Callback missed');
+        };
 
         $.get('assets/stages/' + mapId + '.json')
-            .success(function(data) {
+            .success(function (data) {
+                console.info('[StageLoader] Downloaded `' + mapId + '.json`. Configuring map data...');
+                stage.loaded = false;
+
                 this.configureStage(stage, data, function () {
                     stage.onLoaded(stage);
-                    console.info('[StageLoader] Successfully loaded stage `' + mapId + '.json` (Async operation complete)');
+                    console.info('[StageLoader] Completed loading `' + mapId + '.json` (Async operation complete)');
                 });
             }.bind(this))
-            .error(function() {
+            .error(function () {
                 alert('CRITICAL: Could not load stage: ' + mapId + '. Press OK to restart game.');
                 location.reload();
             });
@@ -52,7 +54,7 @@ var StageLoader = Loader.extend({
         tilesetSrc = tilesetSrc.replace('../images/', '');
         var tilesetImg = Game.images.load(tilesetSrc);
 
-        tilesetImg.onload = function () {
+        var onload = function () {
             var tilesPerRow = data.tilesets[0].imagewidth / Settings.TileSize;
 
             var tidCache =  { };
@@ -131,7 +133,13 @@ var StageLoader = Loader.extend({
             stage.loaded = true;
             stage.unlocked = false;
 
-            cb();
+            cb(stage);
         };
+
+        tilesetImg.onload = onload;
+
+        if (tilesetImg.onloaded) {
+            window.setTimeout(onload, 0);
+        }
     }
 });
