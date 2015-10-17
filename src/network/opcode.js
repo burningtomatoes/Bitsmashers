@@ -9,5 +9,6 @@ var Opcode = {
     THROW: 7,
     ROUND_FINISH: 8,
     GAME_FINISH: 9,
-    BLOCK_SMASH: 10
+    BLOCK_SMASH: 10,
+    SCOREBOARD: 11
 };

@@ -59,6 +59,8 @@ var Router = {
 
                 Camera.followEntity(Game.stage.player);
 
+                Scoreboard.prepareScoreboard();
+
                 $('#go, #uded, #hud').hide();
                 $('#scoreboard').delay(500).fadeIn('fast');
                 $('#game').delay(2500).fadeOut(1000);
@@ -89,6 +91,12 @@ var Router = {
                     b.smash(true);
                 }
 
+                break;
+            case Opcode.SCOREBOARD:
+                if (Net.isHost) {
+                    return;
+                }
+                Scoreboard.syncScoresIn(data);
                 break;
             default:
                 console.warn('[Net:Router] Unable to route message, unknown op', op);

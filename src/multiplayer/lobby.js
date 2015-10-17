@@ -157,6 +157,8 @@ var Lobby = {
             mapId: mapId
         };
 
+        Scoreboard.reset();
+
         Net.broadcastMessage(gameStart);
         Router.processData(gameStart);
     }

@@ -45,6 +45,7 @@ var Rounds = {
         if (this.state == RoundState.IDLE) {
             // Just freshly initialized, begin init
             if (Game.stage != null && Game.stage.loaded) {
+                Scoreboard.reset();
                 this.beginRoundCountdown();
                 console.info('[Rounds] Beginning countdown to first round.');
             }
@@ -130,6 +131,12 @@ var Rounds = {
     },
 
     endRound: function () {
+        var lastPlayer = Game.stage.getLastManStanding();
+
+        if (lastPlayer != null) {
+            Scoreboard.registerWin(lastPlayer);
+        }
+
         var msgRoundComplete = { op: Opcode.ROUND_FINISH };
 
         Net.broadcastMessage(msgRoundComplete);
@@ -137,5 +144,8 @@ var Rounds = {
 
         this.state = RoundState.END_OF_ROUND;
         this.beginCountdown();
+
+        Scoreboard.syncScoresOut();
+        Scoreboard.prepareScoreboard();
     }
 };

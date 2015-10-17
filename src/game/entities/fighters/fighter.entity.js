@@ -32,6 +32,10 @@ var FighterEntity = Entity.extend({
         this.dead = false;
     },
 
+    getName: function () {
+        return 'Player ' + this.player.number;
+    },
+
     configureRenderer: function () {
         this.renderer = new FighterRenderer(this);
     },
@@ -208,6 +212,7 @@ var FighterEntity = Entity.extend({
             this.causesCollision = false;
             this.receivesCollision = false;
             this.isProjectile = true;
+            this.thrownBy = source;
         }
 
         this.damageFlash = 4;
@@ -228,6 +233,17 @@ var FighterEntity = Entity.extend({
         this.causesCollision = false;
         this.receivesCollision = false;
 
+        var killer = null;
+
+        if (this.isProjectile && this.thrownBy != null) {
+            killer = this.thrownBy;
+
+            while (killer.thrownBy != null) {
+                // Find the instigator of this throwing chain!
+                killer = killer.thrownBy;
+            }
+        }
+
         if (!viaSync) {
             if (Net.isHost || this.isLocalPlayer()) {
                 var payload = {
@@ -240,10 +256,10 @@ var FighterEntity = Entity.extend({
             }
         }
 
-        if (this.isLocalPlayer()) {
-            Log.writeMessage('You died!');
+        if (killer == null) {
+            Log.writeMessage('Player ' + this.playerNumber + ' committed suicide');
         } else {
-            Log.writeMessage('Player ' + this.playerNumber + ' died!');
+            Log.writeMessage('Player ' + this.playerNumber + ' was killed by ' + killer.getName());
         }
 
         if (this.isLocalPlayer()) {
@@ -262,5 +278,11 @@ var FighterEntity = Entity.extend({
         }
 
         this.map.remove(this);
+
+        Scoreboard.registerDeath(this);
+
+        if (killer != null && killer.isPlayer) {
+            Scoreboard.registerKill(killer);
+        }
     }
 });

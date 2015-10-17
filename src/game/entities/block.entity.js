@@ -3,6 +3,10 @@ var BlockEntity = Entity.extend({
     receivesCollision: false,
     affectedByGravity: false,
 
+    getName: function () {
+        return 'A block';
+    },
+
     smash: function (viaSync) {
         if (!viaSync) {
             // Ensure all clients are aware of the block being destroyed

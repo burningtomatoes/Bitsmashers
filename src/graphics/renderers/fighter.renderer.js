@@ -57,17 +57,7 @@ var FighterRenderer = Renderer.extend({
     },
 
     getPlayerColor: function () {
-        switch (this.entity.playerNumber) {
-            default:
-            case 1:
-                return 'red';
-            case 2:
-                return 'yellow';
-            case 3:
-                return 'blue';
-            case 4:
-                return 'green';
-        }
+        return this.entity.player.getColor();
     },
 
     indicatorTimer: 0,

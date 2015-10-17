@@ -54,6 +54,11 @@ var Entity = Class.extend({
         this.landed = false;
         this.doubleJumped = false;
         this.isProjectile = false;
+        this.thrownBy = null;
+    },
+
+    getName: function () {
+        return '???';
     },
 
     isMoving: function () {
@@ -87,6 +92,7 @@ var Entity = Class.extend({
             if (Math.abs(this.velocityX) <= 0.1 && this.isPlayer) {
                 // If a player was thrown, un-projectile them if they have slowed down
                 this.isProjectile = false;
+                this.thrownBy = null;
                 this.affectedByGravity = true;
                 this.causesCollision = true;
                 this.receivesCollision = true;
@@ -110,7 +116,7 @@ var Entity = Class.extend({
                     intersectWith.pain(this, throwbackPower);
                 }
 
-                if (willSelfShatter && !this.isPlayer) {
+                if (willSelfShatter) {
                     this.smash();
                     return;
                 }
@@ -125,6 +131,7 @@ var Entity = Class.extend({
                 if (Math.abs(this.velocityX) <= 0.1) {
                     this.velocityX = 0;
                     this.isProjectile = false;
+                    this.thrownBy = null;
                     this.affectedByGravity = true;
                     this.causesCollision = true;
                     this.receivesCollision = true;
@@ -136,6 +143,7 @@ var Entity = Class.extend({
                 this.velocityX = 0;
                 this.velocityY = 0;
                 this.isProjectile = false;
+                this.thrownBy = null;
                 this.affectedByGravity = true;
                 this.causesCollision = true;
                 this.receivesCollision = true;
