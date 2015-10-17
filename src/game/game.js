@@ -61,7 +61,7 @@ var Game = {
 
             console.info('[Game] Stage has loaded. Revealing canvas.');
 
-            $('#game').fadeIn('fast');
+            $('#game').fadeIn('fast').focus();
 
             if (Net.isHost) {
                 console.info('[Game] User is host. Spawning players on map and sending sync.');
