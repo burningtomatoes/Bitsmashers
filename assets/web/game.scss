@@ -1,3 +1,10 @@
+$zIndexGame:        100;       // Canvas
+$zIndexHud:         200;       // Canvas HUD overlays
+$zIndexHudSpecial:  3000;      // Scoreboard
+$zIndexLog:         3500;      // Game activity log
+$zIndexMenu:        5000;      // Main menu
+$zIndexOverlay:     10000;     // Special overlays (debug, dialogs, etc)
+
 @font-face {
   font-family: 'fipps';
   src: url('fipps.otf');
@@ -63,10 +70,10 @@ canvas {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 100;
+  z-index: $zIndexGame;
 }
 .hud {
-  z-index: 200;
+  z-index: $zIndexHud;
 }
 
 #burningtomato {
@@ -79,6 +86,7 @@ canvas {
   width: 100%;
   left: 0;
   right: 0;
+  z-index: $zIndexOverlay;
 
   h1 {
     margin-top: 0;
@@ -87,6 +95,8 @@ canvas {
 }
 
 #mainmenu {
+  z-index: $zIndexMenu;
+
   .connecting {
     margin-bottom: 50px;
     color: yellow;
@@ -188,13 +198,11 @@ canvas {
   font-size: 24px;
   text-align: center;
   text-shadow: 1px 1px 1px #000, -1px -1px 1px #000;
-}
-
-#log, #hud, #debug {
-  z-index: 999999;
+  z-index: $zIndexOverlay;
 }
 
 #log {
+  z-index: $zIndexLog;
   position: fixed;
   left: 0;
   right: 0;
@@ -205,32 +213,33 @@ canvas {
 }
 
 #scoreboard {
-  background: rgba(0, 0, 0, 0.5);
-  color: #fff;
-  position: relative;
-  width: 750px;
-  top: 200px;
-  z-index: 99999999;
-  font-size: 21px;
-  margin: 0 auto;
   display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  padding: 300px;
+  z-index: $zIndexHudSpecial;
+  font-size: 24px;
 
   table {
     border-collapse: collapse;
     width: 100%;
+
     td, th {
       text-align: left;
       padding-left: 15px;
     }
     th {
       font-weight: bold;
+      font-size: 28px;
     }
     tr {
       height: 50px;
-    }
-    tbody tr {
-      background: rgba(0, 0, 0, 0.5);
-      border-top: 10px solid rgba(0, 0, 0, 0.5);
     }
   }
 }

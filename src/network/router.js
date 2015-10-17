@@ -46,6 +46,7 @@ var Router = {
                 break;
             case Opcode.GO:
                 Log.clear();
+                Game.unfreeze();
                 $('#go').show().text('Go!').delay(1000).fadeOut('slow');
                 Game.stage.unlock();
                 Camera.followEntity(Game.stage.player);
@@ -54,11 +55,13 @@ var Router = {
                 break;
             case Opcode.ROUND_FINISH:
                 Game.stage.lock();
+                Game.freeze();
+
                 Camera.followEntity(Game.stage.player);
-                $('#go').show().text('End of round').delay(1000);
-                $('#uded').hide();
-                $('#game').delay(500).fadeOut(2500);
-                $('#scoreboard').show();
+
+                $('#go, #uded, #hud').hide();
+                $('#scoreboard').delay(500).fadeIn('fast');
+                $('#game').delay(2500).fadeOut(1000);
                 break;
             case Opcode.DEATH:
                 var pNo = data.playerNumber;

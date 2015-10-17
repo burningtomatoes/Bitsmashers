@@ -8,6 +8,8 @@ var Game = {
     stage: null,
 
     inGame: false,
+    frozen: false,
+    loading: false,
 
     init: function () {
         console.info('[Game] Initializing BitSmashers R' + this.buildCode + '...');
@@ -22,7 +24,9 @@ var Game = {
     },
 
     start: function () {
-        console.info('[Game] Starting game...');
+        console.info('[Game] Starting game...')
+
+        this.frozen = false;
 
         if (Settings.DebugQuickStart) {
             Net.hostGame();
@@ -41,28 +45,47 @@ var Game = {
         });
     },
 
-    loading: false,
+    freeze: function () {
+        this.frozen = true;
+    },
+
+    unfreeze: function () {
+        this.frozen = false;
+    },
 
     loadStage: function (id) {
+        // Ensure the game, menu and HUD overlays are hidden
         $('#mainmenu').fadeOut();
         $('#game').hide();
         $('#uded').stop().fadeOut('fast');
         $('#go').stop().fadeOut('fast');
         $('#scoreboard').hide();
 
+        // Unload previous stage and restore update loop
         Game.stage = null;
+        Game.inGame = false;
+        Game.unfreeze();
 
+        // Ask the stage loader to asynchronously download and configure the map
         var stage = this.stages.load(id);
         stage.onLoaded = function (stage) {
+            // Map has been loaded successfully
             Game.stage = stage;
             Game.inGame = true;
 
+            // Ensure camera is reset perfectly, without seeing any panning between loads
+            Camera.trackHard = true;
             Camera.centerToMap();
+            Camera.update();
+            Camera.trackHard = false;
 
+            // Reveal game canvas
             console.info('[Game] Stage has loaded. Revealing canvas.');
-
             $('#game').fadeIn('fast').focus();
 
+            // If this is the host, spawn players, sync clients, and begin the countdown
+            // TODO Wait for all clients to complete loading before beginning countdown / sync
+            // TODO Clean up code / move to round management
             if (Net.isHost) {
                 console.info('[Game] User is host. Spawning players on map and sending sync.');
 
@@ -95,7 +118,9 @@ var Game = {
             this.stage.draw(ctx);
         }
 
-        Camera.update();
+        if (!this.frozen) {
+            Camera.update();
+        }
 
         if (Settings.DebugCollision) {
             if (this.stage != null) {
@@ -109,7 +134,7 @@ var Game = {
     update: function () {
         Rounds.update();
         
-        if (this.stage) {
+        if (this.stage && !this.frozen) {
             this.stage.update();
             PlayerControls.update();
         }
