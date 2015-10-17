@@ -7,7 +7,7 @@ var TheDoctorFighter = FighterEntity.extend({
         this.width = 32;
         this.height = 64;
 
-        this.xMargin = 5;
+        this.xMargin = 8;
         this.yMargin = 22;
 
         this.movementSpeed = 3;
