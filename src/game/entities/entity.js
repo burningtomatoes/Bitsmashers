@@ -192,7 +192,12 @@ var Entity = Class.extend({
             this.landed = true;
             this.jumped = false;
             this.doubleJumped = false;
+
             AudioOut.playSfx('land.wav', (!this.isPlayer || !this.isLocalPlayer() ? 0.35 : 0.8));
+
+            if (this.isPlayer && !this.map.unlocked) {
+                this.velocityX = 0;
+            }
         }
 
         if (this.renderer != null) {
