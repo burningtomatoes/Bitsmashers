@@ -240,15 +240,22 @@ var FighterEntity = Entity.extend({
             }
         }
 
-        Log.writeMessage('Player ' + this.playerNumber + ' died!!');
+        if (this.isLocalPlayer()) {
+            Log.writeMessage('You died!');
+        } else {
+            Log.writeMessage('Player ' + this.playerNumber + ' died!');
+        }
 
         if (this.isLocalPlayer()) {
             Camera.centerToMap();
-            $('#uded').show();
+
+            if (this.map.unlocked) {
+                $('#uded').show();
+            }
         }
 
         if (this.attackingWith != null) {
-            Game.stage.remove(this.attackingWith);
+            this.map.remove(this.attackingWith);
 
             this.isAttacking = false;
             this.attackingWith = null;
