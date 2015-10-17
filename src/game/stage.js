@@ -237,6 +237,26 @@ var Stage = Class.extend({
         }
     },
 
+    lock: function () {
+        var players = this.getPlayerEntities();
+
+        // Stop all players that are walking around
+        // This fixes issues where players "walk themselves to death" after winning and input is locked
+        for (var i = 0; i < players.length; i++) {
+            var p = players[i];
+
+            if (!p.isProjectile && !p.isJumping()) {
+                p.velocityX = 0;
+            }
+        }
+
+        this.unlocked = false;
+    },
+
+    unlock: function () {
+        this.unlocked = true;
+    },
+
     syncPlayersOut: function () {
         var playerData = [];
 

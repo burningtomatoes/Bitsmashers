@@ -47,13 +47,13 @@ var Router = {
             case Opcode.GO:
                 Log.clear();
                 $('#go').show().text('Go!').delay(1000).fadeOut('slow');
-                Game.stage.unlocked = true;
+                Game.stage.unlock();
                 Camera.followEntity(Game.stage.player);
                 AudioOut.playSfx('startshot.wav', 0.25);
                 $('#scoreboard').hide();
                 break;
             case Opcode.ROUND_FINISH:
-                Game.stage.unlocked = false;
+                Game.stage.lock();
                 Camera.followEntity(Game.stage.player);
                 $('#go').show().text('End of round').delay(1000);
                 $('#uded').hide();
