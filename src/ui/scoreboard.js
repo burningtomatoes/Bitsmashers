@@ -44,7 +44,7 @@ var Scoreboard = {
         }
 
         // Sort the players array by their internal score
-        var sorted = Lobby.players.sort(function (a, b) {
+        var sorted = Lobby.players.concat().sort(function (a, b) {
             if (a.score < b.score) return 1;
             if (a.score > b.score) return -1;
             return 0;
