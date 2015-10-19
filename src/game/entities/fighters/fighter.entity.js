@@ -238,9 +238,13 @@ var FighterEntity = Entity.extend({
         if (this.isProjectile && this.thrownBy != null) {
             killer = this.thrownBy;
 
+            var infPrev = 5;
+
             while (killer.thrownBy != null) {
                 // Find the instigator of this throwing chain!
                 killer = killer.thrownBy;
+                infPrev--;
+                if (infPrev <= 0) break;
             }
         }
 
