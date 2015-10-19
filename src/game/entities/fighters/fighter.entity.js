@@ -261,7 +261,7 @@ var FighterEntity = Entity.extend({
         }
 
         if (killer == null) {
-            Log.writeMessage('Player ' + this.playerNumber + ' committed suicide');
+            Log.writeMessage('Player ' + this.playerNumber + ' died');
         } else {
             Log.writeMessage('Player ' + this.playerNumber + ' was killed by ' + killer.getName());
         }
