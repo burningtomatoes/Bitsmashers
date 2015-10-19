@@ -24,7 +24,7 @@ var Lobby = {
         return null;
     },
 
-    getPlayerByConnection: function (connectionId) {
+    getPlayerByConnectionId: function (connectionId) {
         if (!Net.isHost) {
             return null;
         }
