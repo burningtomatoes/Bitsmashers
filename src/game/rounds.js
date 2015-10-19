@@ -143,8 +143,35 @@ var Rounds = {
         // TODO Round limitation and game end
     },
 
+    spawnRound: function () {
+        // If this is the host, spawn players, sync clients, and begin the countdown
+        console.info('[Game] User is host. Spawning players on map and sending sync.');
+
+        for (var i = 0; i < Lobby.players.length; i++) {
+            var player = Lobby.players[i];
+
+            var fighter = new TheDoctorFighter();
+            fighter.playerNumber = player.number;
+            fighter.player = player;
+
+            var spawnPos = Game.stage.playerSpawns[i];
+            fighter.posX = spawnPos.x + (fighter.width / 2) + (Settings.TileSize / 2);
+            fighter.posY = spawnPos.y + (fighter.height / 2) + (Settings.TileSize / 2);
+
+            Game.stage.add(fighter);
+
+            if (Lobby.localPlayerNumber == player.number) {
+                Game.stage.setPlayer(fighter);
+            }
+        }
+
+        Game.stage.syncPlayersOut();
+        Game.stage.beginCountdown();
+    },
+
     beginRoundCountdown: function () {
         this.reset();
+        this.spawnRound();
 
         var msgRoundStart = { op: Opcode.COUNTDOWN_START };
 

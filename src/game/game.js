@@ -83,33 +83,8 @@ var Game = {
             console.info('[Game] Stage has loaded. Revealing canvas.');
             $('#game').fadeIn('fast').focus();
 
-            // If this is the host, spawn players, sync clients, and begin the countdown
-            // TODO Wait for all clients to complete loading before beginning countdown / sync
-            // TODO Clean up code / move to round management
-            if (Net.isHost) {
-                console.info('[Game] User is host. Spawning players on map and sending sync.');
-
-                for (var i = 0; i < Lobby.players.length; i++) {
-                    var player = Lobby.players[i];
-
-                    var fighter = new TheDoctorFighter();
-                    fighter.playerNumber = player.number;
-                    fighter.player = player;
-
-                    var spawnPos = stage.playerSpawns[i];
-                    fighter.posX = spawnPos.x + (fighter.width / 2) + (Settings.TileSize / 2);
-                    fighter.posY = spawnPos.y + (fighter.height / 2) + (Settings.TileSize / 2);
-
-                    stage.add(fighter);
-
-                    if (Lobby.localPlayerNumber == player.number) {
-                        stage.setPlayer(fighter);
-                    }
-                }
-
-                stage.syncPlayersOut();
-                stage.beginCountdown();
-            } else {
+            // Inform host we are ready to go
+            if (!Net.isHost) {
                 Net.getConnection().sendMessage({ op: Opcode.LOAD_COMPLETE_NOTIFY });
             }
         };
