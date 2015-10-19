@@ -116,7 +116,7 @@ var Entity = Class.extend({
                     intersectWith.pain(this, throwbackPower);
                 }
 
-                if (willSelfShatter) {
+                if (willSelfShatter && this.isBlock) {
                     this.smash();
                     return;
                 }
