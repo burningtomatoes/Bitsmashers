@@ -1,5 +1,5 @@
 var Router = {
-    processData: function (data) {
+    processData: function (data, connection) {
         var op = data.op;
 
         switch (op) {
@@ -97,6 +97,15 @@ var Router = {
                     return;
                 }
                 Scoreboard.syncScoresIn(data);
+                break;
+            case Opcode.LOAD_COMPLETE_NOTIFY:
+                if (!Net.isHost || connection == null) {
+                    return;
+                }
+                var remotePlayer = Lobby.getPlayerByConnectionId(connection.id);
+                if (remotePlayer != null) {
+                    Rounds.setLoadReady(remotePlayer);
+                }
                 break;
             default:
                 console.warn('[Net:Router] Unable to route message, unknown op', op);

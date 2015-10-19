@@ -305,6 +305,7 @@ var Stage = Class.extend({
             fighter.posX = playerData.posX;
             fighter.posY = playerData.posY;
             fighter.playerNumber = playerData.playerNumber;
+            fighter.player = Lobby.getPlayerByNumber(fighter.playerNumber);
 
             this.add(fighter);
 

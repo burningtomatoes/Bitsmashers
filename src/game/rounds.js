@@ -17,6 +17,8 @@ var Rounds = {
 
     countdownStartedAt: 0,
 
+    loadReadies: [],
+
     getUnixTs: function () {
         return Math.round((new Date()).getTime() / 1000);
     },
@@ -33,6 +35,49 @@ var Rounds = {
     reset: function () {
         this.state = RoundState.IDLE;
         this.countdownStartedAt = false;
+        this.clearLoadReady();
+    },
+
+    setLoadReady: function (player) {
+        if (this.loadReadies.indexOf(player) == -1) {
+            this.loadReadies.push(player.number);
+            console.info('Load ready event received from player #' + player.number);
+        }
+    },
+
+    clearLoadReady: function () {
+        this.loadReadies = [];
+    },
+
+    isLoadReady: function () {
+        for (var i = 0; i < Lobby.players.length; i++) {
+            var player = Lobby.players[i];
+
+            // TODO Check if player lost connection, if so: skip them and drop them from the match
+
+            // If this player is the host -- us -- then it will never send a load ready event to itself
+            // Only break out if the map has not loaded locally
+            if (player.isHost) {
+                if (Game.stage == null || !Game.stage.loaded) {
+                    return false;
+                }
+
+                continue;
+            }
+
+            // If this player has not (yet) sent a load ready message, we are not ready to continue
+            if (this.loadReadies.indexOf(player.number) == -1) {
+                if (Settings.DebugQuickStart) {
+                    // Debug mode with fake players
+                    // Do not require load events
+                    continue;
+                }
+
+                return false;
+            }
+        }
+
+        return true;
     },
 
     update: function () {
@@ -43,8 +88,8 @@ var Rounds = {
         }
 
         if (this.state == RoundState.IDLE) {
-            // Just freshly initialized, begin init
-            if (Game.stage != null && Game.stage.loaded) {
+            // Just freshly initialized, begin init when all players are loaded up
+            if (this.isLoadReady()) {
                 Scoreboard.reset();
                 this.beginRoundCountdown();
                 console.info('[Rounds] Beginning countdown to first round.');
@@ -88,8 +133,8 @@ var Rounds = {
 
         if (this.state == RoundState.ROUND_TRANSITIONING) {
             // Round end scoreboard is gone, we are (re)loading the stage now
-            // Await stage load and then go back to starting the round
-            if (Game.stage != null && Game.stage.loaded) {
+            // Await stage load for all players and then go back to starting the round
+            if (this.isLoadReady()) {
                 console.info('[Rounds] Local stage loading complete. Moving to round countdown.');
                 this.beginRoundCountdown();
             }
@@ -100,6 +145,10 @@ var Rounds = {
 
     beginRoundCountdown: function () {
         this.reset();
+
+        var msgRoundStart = { op: Opcode.COUNTDOWN_START };
+
+        Net.broadcastMessage(msgRoundStart);
 
         this.state = RoundState.STARTING_ROUND_COUNTDOWN;
         this.beginCountdown();
@@ -147,5 +196,7 @@ var Rounds = {
 
         Scoreboard.syncScoresOut();
         Scoreboard.prepareScoreboard();
+
+        this.clearLoadReady();
     }
 };

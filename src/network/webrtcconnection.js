@@ -75,7 +75,7 @@ var WebRtcConnection = Class.extend({
         }
 
         var parsed = JSON.parse(data);
-        Router.processData(parsed);
+        Router.processData(parsed, this);
     },
 
     onChannelError: function (error) {

@@ -1,10 +1,12 @@
 var Player = Entity.extend({
     connection: null,
     number: 1,
+    isHost: false,
 
     init: function (connection, number) {
         this.connection = connection;
         this.number = number;
+        this.isHost = false;
     },
 
     getColor: function () {

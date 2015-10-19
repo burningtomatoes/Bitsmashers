@@ -57,6 +57,10 @@ var FighterRenderer = Renderer.extend({
     },
 
     getPlayerColor: function () {
+        if (this.entity.player == null) {
+            return 'white';
+        }
+
         return this.entity.player.getColor();
     },
 

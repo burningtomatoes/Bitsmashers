@@ -109,6 +109,8 @@ var Game = {
 
                 stage.syncPlayersOut();
                 stage.beginCountdown();
+            } else {
+                Net.getConnection().sendMessage({ op: Opcode.LOAD_COMPLETE_NOTIFY });
             }
         };
     },

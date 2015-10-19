@@ -52,6 +52,11 @@ var Lobby = {
             }
 
             var player = new Player(connection, i);
+
+            if (Net.isHost && connection == null) {
+                player.isHost = true;
+            }
+
             this.players.push(player);
             return i;
         }
@@ -75,7 +80,9 @@ var Lobby = {
             return;
         }
 
-        var player = this.getPlayerByConnection(connection);
+        console.error('Player disconnected!!!');
+
+        var player = this.getPlayerByConnectionId(connection);
         var idx = this.players.indexOf(player);
         this.players.splice(idx, 1);
 
@@ -93,7 +100,7 @@ var Lobby = {
             var player = this.getPlayerByNumber(playerNo);
 
             if (player == null) {
-                $h4.text('Searching...');
+                $h4.text('Searching for player...');
             } else {
                 $h4.text(this.localPlayerNumber == player.number ? 'CHOOSE A CHARACTER' : 'JOINED!');
             }
@@ -135,6 +142,11 @@ var Lobby = {
 
             var localPlayer = new Player(null, player.number);
             localPlayer.remoteId = player.remoteId;
+
+            if (!Net.isHost && localPlayer.number == 0) {
+                localPlayer.isHost = true;
+            }
+
             this.players.push(localPlayer);
 
             if (player.remoteId === Net.slotId) {
